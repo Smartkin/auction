@@ -1,4 +1,4 @@
-package com.badcompany.auction.auction;
+package com.badcompany.auction;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

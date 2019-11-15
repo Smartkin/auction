@@ -1,4 +1,4 @@
-package com.badcompany.auction.auction;
+package com.badcompany.auction;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
