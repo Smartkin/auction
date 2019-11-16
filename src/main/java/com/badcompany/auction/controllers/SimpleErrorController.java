@@ -1,17 +1,17 @@
 package com.badcompany.auction.controllers;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
-@RestController
+@Controller
 public class SimpleErrorController implements ErrorController {
 
     private static final String PATH = "/error";
 
-    @RequestMapping(value = PATH)
+    @GetMapping(PATH)
     public String error() {
-        return "Error handling";
+        return "error";
     }
 
     @Override
