@@ -43,6 +43,12 @@ module.exports = {
     cssSourceMap: true
   },
 
+  optimize:{
+    splitChunks:{
+      chunks: "all"
+    }
+  },
+
   build: {
     // Template for index.html
     index: path.resolve(__dirname, '../target/dist/index.html'),
@@ -72,5 +78,6 @@ module.exports = {
     // `npm run build --report`
     // Set to `true` or `false` to always turn it on or off
     bundleAnalyzerReport: process.env.npm_config_report
-  }
+  },
+
 }
