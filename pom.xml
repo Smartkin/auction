@@ -16,8 +16,8 @@
 	<description>Online auction developed by students of MTUCI</description>
 
 	<modules>
-		<module>backend</module>
 		<module>frontend</module>
+		<module>backend</module>
 	</modules>
 
 	<properties>

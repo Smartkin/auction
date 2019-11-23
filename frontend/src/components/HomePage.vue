@@ -22,7 +22,7 @@ export default {
       axios.get('/api/hello')
         .then(response => {
           this.response = response.data
-          this.msg = response.data
+          this.msg = this.response['message']
         })
         .catch(e => {
           this.errors.push(e)
