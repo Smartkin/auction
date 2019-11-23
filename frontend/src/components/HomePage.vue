@@ -1,21 +1,25 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <button class="Search__button" @click="callRestService()">Say Hi!</button>
+    <header-menu active-panel="homePage"></header-menu>
+    <p>Домашняя страница</p>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import HeaderMenu from './HeaderMenu'
 
 export default {
-  name: 'HelloWorld',
+  name: 'HomePage',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
       response: [],
       errors: []
     }
+  },
+  components: {
+    HeaderMenu
   },
   methods: {
     callRestService () {
