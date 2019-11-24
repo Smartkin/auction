@@ -74,8 +74,8 @@ input:hover{
   background-color: #111111;
 }
 input:focus{
-  background-color: #519099;
-  border-bottom: 2px solid #519099;
+  background-color: #2b4e57;
+  border-bottom: 2px solid #2b4e57;
 }
 button{
   border: none;

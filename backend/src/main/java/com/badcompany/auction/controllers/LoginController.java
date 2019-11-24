@@ -21,7 +21,7 @@ public class LoginController {
     UserRepository repository;
 
     @GetMapping("/api/login")
-    public String loginController(HttpSession session, @RequestParam("email")Optional<String> email,
+    public String loginHandler(HttpSession session, @RequestParam("email")Optional<String> email,
                                   @RequestParam("password") Optional<String> password) throws JSONException {
         JSONObject answer = new JSONObject();
         answer.put("success", false);

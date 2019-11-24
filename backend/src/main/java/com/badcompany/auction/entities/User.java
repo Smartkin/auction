@@ -27,18 +27,18 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", address1='" + address1 + '\'' +
-                ", address2='" + address2 + '\'' +
-                ", country='" + country + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", zipcode=" + zipcode +
+        return "{" +
+                "\"id\":" + id +
+                ", \"name\":\"" + name + '\"' +
+                ", \"surname\":\"" + surname + '\"' +
+                ", \"password\":\"" + password + '\"' +
+                ", \"email\":\"" + email + '\"'+
+                ", \"address1\":\"" + address1 + '\"' +
+                ", \"address2\":\"" + address2 + '\"' +
+                ", \"country\":\"" + country + '\"' +
+                ", \"city\":\"" + city + '\"' +
+                ", \"state\":\"" + state + '\"' +
+                ", \"zipcode\":" + zipcode +
                 '}';
     }
 
