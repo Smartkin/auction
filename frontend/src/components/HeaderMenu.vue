@@ -1,7 +1,7 @@
 <template>
   <header>
     <ul class="header-panel-list">
-      <li v-for="item in menuItems" v-bind:class="{'float-right': item.isOnRight, active: item.isActive}" v-bind:key="item.id" v-bind:id="item.nameId">
+      <li v-for="item in menuItems" v-bind:class="{'float-right': item.isOnRight, active: item.isActive}" v-bind:key="item.id" v-bind:id="item.nameId" @click="item.onClick">
         <router-link v-bind:to="item.link">{{item.name}}</router-link>
       </li>
     </ul>
@@ -15,10 +15,12 @@ export default {
     return {
       menuItems: [
         {
+          // TODO: Make these a separate object
           nameId: 'homePage',
           name: 'Главная страница',
           link: '/',
           isOnRight: false,
+          onClick () {},
           isActive: false
         },
         {
@@ -26,6 +28,7 @@ export default {
           name: 'Список лотов',
           link: '/lots_list',
           isOnRight: false,
+          onClick () {},
           isActive: false
         },
         {
@@ -33,6 +36,7 @@ export default {
           name: 'Контакты',
           link: '/contacts',
           isOnRight: false,
+          onClick () {},
           isActive: false
         },
         {
@@ -40,13 +44,15 @@ export default {
           name: 'О нас',
           link: '/about',
           isOnRight: true,
+          onClick () {},
           isActive: false
         },
         {
-          nameId: 'login',
-          name: 'Войти',
-          link: '/login',
+          nameId: this.$cookies.get('SESSION') !== null ? 'profile' : 'login',
+          name: this.$cookies.get('SESSION') !== null ? this.$cookies.get('name') : 'Войти',
+          link: this.$cookies.get('SESSION') !== null ? '/profile' : '/login',
           isOnRight: true,
+          onClick () {},
           isActive: false
         }
       ]
@@ -64,6 +70,23 @@ export default {
     this.menuItems.forEach(function (value, index, array) {
       array[index]['isActive'] = (value['nameId'] === panel)
     })
+    if (this.$cookies.get('SESSION') !== null) {
+      const cookies = this.$cookies
+      this.menuItems.push({
+        nameId: 'logout',
+        name: 'Выйти',
+        link: '/',
+        onClick () {
+          console.log(cookies.keys())
+          cookies.remove('SESSION')
+            .remove('name')
+            .remove('surname')
+            .remove('userID')
+        },
+        isOnRight: true,
+        isActive: false
+      })
+    }
   }
 }
 </script>
@@ -83,9 +106,6 @@ export default {
 li{
   float: left;
   border-right: 1px solid #5f5f5f;
-}
-li:last-child{
-  border-right: none;
 }
 .float-right{
   float: right;

@@ -5,6 +5,7 @@ import Contacts from '@/components/Contacts'
 import LotsList from '@/components/LotsList'
 import About from '@/components/About'
 import Login from '@/components/Login'
+import Profile from '@/components/Profile'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile
     }
   ]
 })

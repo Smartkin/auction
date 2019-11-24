@@ -2,10 +2,16 @@
   <div class="login">
     <header-menu active-panel="login"></header-menu>
     <p>Вход в профиль</p>
-    <form>
-      Email:<input type="email" id="emailInput">
-      Пароль:<input type="password" id="passwordInput">
-      <button @click="login">Войти</button>
+    <div class="success-login">
+      <p v-if="success">Вход успешно выполнен!</p>
+    </div>
+    <div class="error-login">
+      <p v-if="errorMsg !== ''">{{ errorMsg }}</p>
+    </div>
+    <form @submit.prevent="login">
+      Email:<input v-model="email" type="email" id="emailInput">
+      Пароль:<input v-model="password" type="password" id="passwordInput">
+      <button type="submit">Войти</button>
     </form>
   </div>
 </template>
@@ -15,10 +21,41 @@ import HeaderMenu from './HeaderMenu'
 import axios from 'axios'
 
 export default {
+  data () {
+    return {
+      email: '',
+      password: '',
+      success: false,
+      errorMsg: ''
+    }
+  },
   components: { HeaderMenu },
   methods: {
     login () {
-      
+      const mail = this.email
+      const pass = this.password
+      this.errorMsg = ''
+      console.log('Entered mail: ' + mail)
+      console.log('Entered password: ' + pass)
+      axios.get('/api/login', {
+        params: {
+          email: mail,
+          password: pass
+        }
+      }).then(response => {
+        console.log(response.data)
+        let data = response.data
+        this.success = data['success']
+        if (!this.success) {
+          this.errorMsg = data['error']
+        } else {
+          this.$cookies.set('SESSION', data['sessionID'])
+            .set('name', data['name'])
+            .set('surname', data['surname'])
+            .set('userID', data['userID'])
+          this.$router.push('/')
+        }
+      })
     }
   }
 }
