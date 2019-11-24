@@ -2,8 +2,8 @@
   <div class='lots-list'>
     <header-menu active-panel="lotsList"></header-menu>
     <p>Список лотов</p>
-    <ul>
-      <li v-for="lot in listOfLots" v-bind:key="lot.id">
+    <ul class="lots-list">
+      <li v-for="lot in listOfLots" v-bind:key="lot.id" class="lots">
         {{ lot.name }} за {{ lot.price }} рублей
         Выставлено пользователем с номером {{ lot.ownerID }}
       </li>
@@ -44,5 +44,10 @@ export default {
 </script>
 
 <style>
-
+.lots-list{
+  list-style-type: none;
+}
+.lots{
+  text-align: left;
+}
 </style>

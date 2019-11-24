@@ -1,7 +1,7 @@
 <template>
   <header>
     <ul class="header-panel-list">
-      <li v-for="item in menuItems" v-bind:class="{'float-right': item.isOnRight, active: item.isActive}" v-bind:key="item.id" v-bind:id="item.nameId" @click="item.onClick">
+      <li v-for="item in menuItems" v-bind:class="{'float-right': item.isOnRight, active: item.isActive, 'header-list-item': true}" v-bind:key="item.id" v-bind:id="item.nameId" @click="item.onClick">
         <router-link v-bind:to="item.link">{{item.name}}</router-link>
       </li>
     </ul>
@@ -103,14 +103,14 @@ export default {
   background-color: #333333;
   border-bottom: 1px solid #5f5f5f;
 }
-li{
+.header-list-item{
   float: left;
   border-right: 1px solid #5f5f5f;
 }
 .float-right{
   float: right;
 }
-li a{
+.header-list-item a{
   display: block;
   color: white;
   text-align: center;
@@ -118,7 +118,7 @@ li a{
   text-decoration: none;
   transition: background-color 0.4s ease-in-out;
 }
-li a:hover{
+.header-list-item a:hover{
   background-color: #111111;
 }
 .active{
