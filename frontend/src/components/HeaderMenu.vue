@@ -70,6 +70,7 @@ export default {
     this.menuItems.forEach(function (value, index, array) {
       array[index]['isActive'] = (value['nameId'] === panel)
     })
+    // Check for session
     if (this.$cookies.get('SESSION') !== null) {
       const cookies = this.$cookies
       this.menuItems.push({

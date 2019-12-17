@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style>
-body{
+body {
   background-color: #333333;
 }
 #app {
@@ -19,7 +19,18 @@ body{
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #71a7bb;
+  color: #8bb4bb;
   margin-top: 60px;
+}
+a:link, a:visited {
+  color: #8bb4bb;
+  text-decoration: none;
+}
+a:hover, a:active {
+  color: red;
+}
+img {
+  width: 10%;
+  height: auto;
 }
 </style>

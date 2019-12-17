@@ -6,6 +6,8 @@ import LotsList from '@/components/LotsList'
 import About from '@/components/About'
 import Login from '@/components/Login'
 import Profile from '@/components/Profile'
+import Lot from '@/components/Lot'
+import Registration from '@/components/Registration'
 
 Vue.use(Router)
 
@@ -40,6 +42,17 @@ export default new Router({
       path: '/profile',
       name: 'profile',
       component: Profile
+    },
+    {
+      path: '/lot/:id',
+      name: 'lot',
+      component: Lot,
+      props: true
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Registration
     }
   ]
 })

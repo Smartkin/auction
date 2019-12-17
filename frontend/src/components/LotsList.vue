@@ -1,11 +1,14 @@
 <template>
   <div class='lots-list'>
-    <header-menu active-panel="lotsList"></header-menu>
+    <header-menu active-panel="lotsList"/>
     <p>Список лотов</p>
     <ul class="lots-list">
-      <li v-for="lot in listOfLots" v-bind:key="lot.id" class="lots">
-        {{ lot.name }} за {{ lot.price }} рублей
-        Выставлено пользователем с номером {{ lot.ownerID }}
+      <li v-for="lot in listOfLots" v-bind:key="lot.id" @click="onLotClick" class="lots-list-item">
+        <router-link v-bind:to="lot.link">
+          <placeholder width="200" height="200" text="Лот"/>
+          {{ lot.name }} за {{ lot.price }} рублей
+          Выставлено пользователем с номером {{ lot.ownerID }}
+        </router-link>
       </li>
     </ul>
   </div>
@@ -13,16 +16,24 @@
 
 <script>
 import HeaderMenu from './HeaderMenu'
+import Placeholder from './Placeholder'
 import axios from 'axios'
 
 export default {
   name: 'lots-list',
   components: {
-    HeaderMenu
+    HeaderMenu,
+    Placeholder
   },
   data () {
     return {
-      listOfLots: []
+      listOfLots: [{
+        id: 0,
+        link: '/lot/0',
+        name: 'Лот',
+        price: 0,
+        ownerID: 0
+      }]
     }
   },
   methods: {
@@ -32,9 +43,13 @@ export default {
         let array = JSON.parse(response.data['lots'])
         // Push all the lots
         for (const lot in array) {
+          array[lot].link = '/lot/' + array[lot].id
           this.listOfLots.push(array[lot])
         }
       })
+    },
+    onLotClick () {
+
     }
   },
   mounted () {
@@ -47,7 +62,8 @@ export default {
 .lots-list{
   list-style-type: none;
 }
-.lots{
+.lots-list-item{
   text-align: left;
+  display: block;
 }
 </style>

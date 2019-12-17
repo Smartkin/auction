@@ -1,23 +1,36 @@
 package com.badcompany.auction.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
+        })
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+
+    @NotBlank
+    private String username;
+    @NotBlank
     private String name;
-    @NotNull
+    @NotBlank
     private String surname;
-    @NotNull
+    @NotBlank
+    @Size(max = 120)
     private String password;
-    @NotNull
+    @NotBlank
+    @Email
     private String email;
+
     private String address1;
     private String address2;
     private String country;
@@ -25,21 +38,16 @@ public class User {
     private String state;
     private Long zipcode;
 
-    @Override
-    public String toString() {
-        return "{" +
-                "\"id\":" + id +
-                ", \"name\":\"" + name + '\"' +
-                ", \"surname\":\"" + surname + '\"' +
-                ", \"password\":\"" + password + '\"' +
-                ", \"email\":\"" + email + '\"'+
-                ", \"address1\":\"" + address1 + '\"' +
-                ", \"address2\":\"" + address2 + '\"' +
-                ", \"country\":\"" + country + '\"' +
-                ", \"city\":\"" + city + '\"' +
-                ", \"state\":\"" + state + '\"' +
-                ", \"zipcode\":" + zipcode +
-                '}';
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getSurname() {
@@ -130,6 +138,14 @@ public class User {
         this.password = password;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     public User(){
         super();
     }
@@ -143,9 +159,10 @@ public class User {
         this.email = email;
     }
 
-    public User(String name, String surname, String password, String email){
+    public User(String name, String surname, String username, String password, String email){
         super();
         this.name=name;
+        this.username = username;
         this.password = password;
         this.surname = surname;
         this.email = email;

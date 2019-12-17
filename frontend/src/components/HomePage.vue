@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <header-menu active-panel="homePage"></header-menu>
+    <header-menu active-panel="homePage"/>
     <p>Домашняя страница</p>
   </div>
 </template>
@@ -14,8 +14,7 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      response: [],
-      errors: []
+      response: []
     }
   },
   components: {

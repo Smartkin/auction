@@ -1,90 +1,130 @@
 <template>
   <div class="login">
-    <header-menu active-panel="login"></header-menu>
-    <p>Вход в профиль</p>
-    <div class="success-login">
-      <p v-if="success">Вход успешно выполнен!</p>
+    <header-menu active-panel="login"/>
+    <div class="card card-container">
+      <form name="form" @submit.prevent="handleLogin">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            class="form-control"
+            name="username"
+            v-model="user.username"
+            v-validate="'required'"
+          />
+          <div
+            class="alert alert-danger"
+            role="alert"
+            v-if="errors.has('username')"
+          >Username is required!</div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            v-model="user.password"
+            v-validate="'required'"
+          />
+          <div
+            class="alert alert-danger"
+            role="alert"
+            v-if="errors.has('password')"
+          >Password is required!</div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary btn-block" :disabled="loading">
+            <span class="spinner-border spinner-border-sm" v-show="loading"/>
+            <span>Login</span>
+          </button>
+        </div>
+        <div class="form-group">
+          <div class="alert alert-danger" role="alert" v-if="message">{{message}}</div>
+        </div>
+      </form>
+      <router-link to="/register">
+        <button class="btn btn-primary btn-block" :disabled="loading">
+          <span class="spinner-border spinner-border-sm" v-show="loading"/>
+          <span>Регистрация</span>
+        </button>
+      </router-link>
     </div>
-    <div class="error-login">
-      <p v-if="errorMsg !== ''">{{ errorMsg }}</p>
-    </div>
-    <form @submit.prevent="login">
-      Email:<input v-model="email" type="email" id="emailInput">
-      Пароль:<input v-model="password" type="password" id="passwordInput">
-      <button type="submit">Войти</button>
-    </form>
   </div>
 </template>
 
 <script>
 import HeaderMenu from './HeaderMenu'
-import axios from 'axios'
+import User from '../models/user'
 
 export default {
+  name: 'login',
+  components: {
+    HeaderMenu
+  },
   data () {
     return {
-      email: '',
-      password: '',
-      success: false,
-      errorMsg: ''
+      user: new User('', ''),
+      loading: false,
+      message: ''
     }
   },
-  components: { HeaderMenu },
+  computed: {
+    loggedIn () {
+      return this.$store.state.auth.status.loggedIn
+    }
+  },
+  mounted () {
+    if (this.loggedIn) {
+      this.$router.push('/')
+    }
+  },
   methods: {
-    login () {
-      const mail = this.email
-      const pass = this.password
-      this.errorMsg = ''
-      console.log('Entered mail: ' + mail)
-      console.log('Entered password: ' + pass)
-      axios.get('/api/login', {
-        params: {
-          email: mail,
-          password: pass
-        }
-      }).then(response => {
-        console.log(response.data)
-        let data = response.data
-        this.success = data['success']
-        if (!this.success) {
-          this.errorMsg = data['error']
-        } else {
-          this.$cookies.set('SESSION', data['sessionID'])
-            .set('name', data['name'])
-            .set('surname', data['surname'])
-            .set('userID', data['userID'])
-          this.$router.push('/')
-        }
-      })
+    handleLogin () {
+      this.loading = true
+      this.$validator.validateAll()
+
+      if (this.errors.any()) {
+        this.loading = false
+        return
+      }
+
+      if (this.user.username && this.user.password) {
+        this.$store.dispatch('auth/login', this.user).then(
+          () => {
+            this.$router.push('/')
+          },
+          error => {
+            this.loading = false
+            this.message = error.message
+          }
+        )
+      }
     }
   }
 }
 </script>
 
-<style>
-input{
-  border: none;
-  outline: none;
-  border-bottom: 2px solid red;
-  background-color: #333333;
-  transition: background-color 0.4s ease-in-out, border-bottom-color 0.4s ease-in-out;
-  color: white;
+<style scoped>
+label {
+  display: block;
+  margin-top: 10px;
 }
-input:hover{
-  background-color: #111111;
+
+.card-container.card {
+  max-width: 350px !important;
+  padding: 40px 40px;
 }
-input:focus{
-  background-color: #2b4e57;
-  border-bottom: 2px solid #2b4e57;
-}
-button{
-  border: none;
-  background-color: transparent;
-  color: inherit;
-  transition: background-color 0.1s ease-in-out;
-  padding: 5px 5px;
-}
-button:hover{
-  background-color: #111111;
+
+.card {
+  background-color: #f7f7f7;
+  padding: 20px 25px 30px;
+  margin: 50px auto 25px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 }
 </style>
