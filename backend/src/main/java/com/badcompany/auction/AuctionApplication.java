@@ -57,5 +57,15 @@ public class AuctionApplication implements CommandLineRunner {
 		userRepository.save(user);
 		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 1000L, "Статуэтка из Украины 1880 года", false));
 		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 2000L, "Монета царского двора 1789 года", false));
+		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 3000L, "Серебро высокой пробы", false));
+		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 4000L, "Кольцо из древнего Рима", false));
+		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 5000L, "Монета старых годов", false));
+		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 6000L, "Кувшин из советских времён", false));
+		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 7000L, "Ещё один лот", false));
+		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 8000L, "Придумывать лоты сложно", false));
+		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 9000L, "Особенно когда до дедлайна считанные часы", false));
+		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 10000L, "Монета царского двора 1889 года", false));
+		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 11000L, "Монета царского двора 1849 года", false));
+		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 12000L, "Золото высокой пробы", false));
 	}
 }

@@ -1,23 +1,14 @@
 import axios from 'axios'
-import authHeader from './auth-header'
 
-const API_URL = 'http://localhost:8080/api/role/'
+const API_URL = '/api/users'
 
 class UserService {
-  getPublicContent() {
-    return axios.get(API_URL + 'all')
-  }
-
-  getUserBoard() {
-    return axios.get(API_URL + 'user', { headers: authHeader() })
-  }
-
-  getEvaluatorBoard() {
-    return axios.get(API_URL + 'evaluator', { headers: authHeader() })
-  }
-
-  getAdminBoard() {
-    return axios.get(API_URL + 'admin', { headers: authHeader() })
+  getUserById (id) {
+    return axios.get(API_URL, {
+      params: {
+        id: id
+      }
+    })
   }
 }
 

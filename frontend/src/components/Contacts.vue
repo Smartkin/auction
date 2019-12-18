@@ -1,9 +1,13 @@
 <template>
   <div class="contacts">
-    <header-menu active-panel="contacts"></header-menu>
-    <p>
-      Контакты
-    </p>
+    <header-menu active-panel="contacts"/>
+    <h2>Работу выполняли</h2>
+    <ul>
+      <li>Смышляев Владислав - Ведущий Разработчик</li>
+      <li>Кузнецов Александр - Разработчик</li>
+      <li>Простомолотов Олег - Тестировщик</li>
+      <li>Чернюк Александр - Аналитик</li>
+    </ul>
   </div>
 </template>
 
@@ -18,6 +22,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+ul {
+  list-style-type: none;
+}
 
+li {
+  font-size: 2em;
+}
 </style>

@@ -168,4 +168,20 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "\"id\":" + id +
+                ", \"username\":\"" + username + '\"' +
+                ", \"name\":\"" + name + '\"' +
+                ", \"surname\":\"" + surname + '\"' +
+                ", \"email\":\"" + email + '\"' +
+                ", \"address1\":\"" + address1 + '\"' +
+                ", \"address2\":\"" + address2 + '\"' +
+                ", \"country\":\"" + country + '\"' +
+                ", \"city\":\"" + city + '\"' +
+                ", \"state\":\"" + state + '\"' +
+                ", \"zipcode\":" + zipcode +
+                '}';
+    }
 }

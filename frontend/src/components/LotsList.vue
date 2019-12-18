@@ -3,12 +3,17 @@
     <header-menu active-panel="lotsList"/>
     <p>Список лотов</p>
     <ul class="lots-list">
-      <li v-for="lot in listOfLots" v-bind:key="lot.id" @click="onLotClick" class="lots-list-item">
+      <li v-for="lot in listOfLots" v-bind:key="lot.id" class="lots-list-item">
         <router-link v-bind:to="lot.link">
           <placeholder width="200" height="200" text="Лот"/>
           {{ lot.name }} за {{ lot.price }} рублей
-          Выставлено пользователем с номером {{ lot.ownerID }}
+          <p>Выставлено пользователем {{ lot.owner.username }}</p>
+          <p v-if="lot.bidder !== null">Выкупается пользователем {{ lot.bidder.username }}</p>
         </router-link>
+        <form @submit.prevent="handleBid(lot.id)">
+          <input type="number" name="priceIncrease" v-model="bid.priceIncrease" v-validate="'required|min:1|max:5'"/>
+          <button>Повысить</button>
+        </form>
       </li>
     </ul>
   </div>
@@ -17,7 +22,11 @@
 <script>
 import HeaderMenu from './HeaderMenu'
 import Placeholder from './Placeholder'
-import axios from 'axios'
+import Lot from '../models/lot'
+import User from '../models/user'
+import Bid from '../models/bid'
+import LotsService from '../services/lots.service'
+import UserService from '../services/user.service'
 
 export default {
   name: 'lots-list',
@@ -27,33 +36,60 @@ export default {
   },
   data () {
     return {
-      listOfLots: [{
-        id: 0,
-        link: '/lot/0',
-        name: 'Лот',
-        price: 0,
-        ownerID: 0
-      }]
-    }
-  },
-  methods: {
-    getLots () {
-      axios.get('/api/lots').then(response => {
-        // Parse the JSON
-        let array = JSON.parse(response.data['lots'])
-        // Push all the lots
-        for (const lot in array) {
-          array[lot].link = '/lot/' + array[lot].id
-          this.listOfLots.push(array[lot])
-        }
-      })
-    },
-    onLotClick () {
-
+      listOfLots: [],
+      startId: 0,
+      loadCount: 5,
+      bid: new Bid(0, 0)
     }
   },
   mounted () {
-    this.getLots()
+    // Get lots information
+    LotsService.getLots().then(
+      response => {
+        let array = response.data['lots']
+        console.log(array)
+        for (const lot in array) {
+          let parsedLot = JSON.parse(array[lot])
+          // Get the user information
+          UserService.getUserById(parsedLot.ownerID).then(
+            response => {
+              console.log(response.data.user)
+              let owner = JSON.parse(response.data.user)
+              // Get bidder information if a bidder exists
+              if (parsedLot.bidderID !== null) {
+                UserService.getUserById(parsedLot.bidderID).then(
+                  response => {
+                    let bidder = JSON.parse(response.data.user)
+                    this.listOfLots.push(new Lot(parsedLot.id, '/lot/' + parsedLot.id,
+                              parsedLot.name, new User(owner.name, owner.surname, owner.username, owner.email),
+                              parsedLot.price, new User(bidder.name, bidder.surname, bidder.username, bidder.email)))
+                  }
+                )
+              } else {
+                this.listOfLots.push(new Lot(parsedLot.id, '/lot/' + parsedLot.id, parsedLot.name, new User(owner.name, owner.surname, owner.username, owner.email), parsedLot.price))
+              }
+              console.log(this.listOfLots)
+            }
+          )
+
+        }
+        console.log(this.listOfLots)
+      },
+      error => {
+        this.listOfLots.push(error.response.data.message)
+      }
+    )
+  },
+  methods: {
+    handleBid (lotId) {
+      this.$validator.validateAll()
+      console.log('Tried to bid')
+      console.log(this.bid)
+      this.bid.lotId = lotId
+      if (this.bid.priceIncrease) {
+        this.$store.dispatch('lots/bid', this.bid)
+      }
+    }
   }
 }
 </script>
@@ -65,5 +101,6 @@ export default {
 .lots-list-item{
   text-align: left;
   display: block;
+  padding-bottom: 30px;
 }
 </style>

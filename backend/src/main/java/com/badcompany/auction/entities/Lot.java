@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Lot {
@@ -12,7 +13,11 @@ public class Lot {
     @GeneratedValue
     private Long id;
     @NotNull
+    @Size(min = 10, max = 50)
     private String name;
+    @NotNull
+    @Size(max = 1024)
+    private String description;
     @NotNull
     private Long price;
     @NotNull
@@ -26,11 +31,20 @@ public class Lot {
         return "{" +
                 "\"id\":" + id +
                 ", \"name\":\"" + name + '\"' +
+                ", \"description\":\"" +  '\"' +
                 ", \"price\":" + price +
                 ", \"ownerID\":" + ownerID +
                 ", \"bidderID\":" + bidderID +
                 ", \"isBuyout\":" + isBuyout +
                 '}';
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getId() {
@@ -86,6 +100,7 @@ public class Lot {
     public Lot(Long id, Long ownerID, Long price, String name, boolean isBuyout){
         this.id=id;
         this.name=name;
+        this.description="Простое описание лота.";
         this.price=price;
         this.ownerID=ownerID;
         this.isBuyout=isBuyout;
@@ -94,6 +109,15 @@ public class Lot {
     public Lot(Long ownerID, Long price, String name, boolean isBuyout){
         this.ownerID=ownerID;
         this.price=price;
+        this.description="Простое описание лота.";
+        this.isBuyout=isBuyout;
+        this.name=name;
+    }
+
+    public Lot(Long ownerID, Long price, String name, String description, boolean isBuyout){
+        this.ownerID=ownerID;
+        this.price=price;
+        this.description=description;
         this.isBuyout=isBuyout;
         this.name=name;
     }

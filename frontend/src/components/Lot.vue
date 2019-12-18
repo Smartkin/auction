@@ -9,7 +9,6 @@
 <script>
 import HeaderMenu from './HeaderMenu'
 import Placeholder from './Placeholder'
-// import axios from 'axios'
 
 export default {
   components: {

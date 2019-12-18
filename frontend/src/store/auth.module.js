@@ -1,5 +1,5 @@
 import AuthService from '../services/auth.service'
-/* eslint-disable */
+
 const user = JSON.parse(localStorage.getItem('user'))
 const initialState = user
       ? { status: { loggedIn: true }, user }

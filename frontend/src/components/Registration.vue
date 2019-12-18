@@ -75,7 +75,7 @@
             >{{errors.first('password')}}</div>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary btn-block">Sign Up</button>
+            <button class="btn btn-primary btn-block">Зарегистрироваться</button>
           </div>
         </div>
       </form>
@@ -148,7 +148,7 @@ label {
 }
 
 .card {
-  background-color: #f7f7f7;
+  background-color: #555555;
   padding: 20px 25px 30px;
   margin: 50px auto 25px;
   -moz-border-radius: 2px;

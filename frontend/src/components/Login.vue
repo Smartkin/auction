@@ -4,7 +4,7 @@
     <div class="card card-container">
       <form name="form" @submit.prevent="handleLogin">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username">Логин</label>
           <input
             type="text"
             class="form-control"
@@ -16,10 +16,10 @@
             class="alert alert-danger"
             role="alert"
             v-if="errors.has('username')"
-          >Username is required!</div>
+          >Требуется ввести ник!</div>
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">Пароль</label>
           <input
             type="password"
             class="form-control"
@@ -31,12 +31,12 @@
             class="alert alert-danger"
             role="alert"
             v-if="errors.has('password')"
-          >Password is required!</div>
+          >Требуется ввести пароль!</div>
         </div>
         <div class="form-group">
           <button class="btn btn-primary btn-block" :disabled="loading">
             <span class="spinner-border spinner-border-sm" v-show="loading"/>
-            <span>Login</span>
+            <span>Войти</span>
           </button>
         </div>
         <div class="form-group">
@@ -117,7 +117,7 @@ label {
 }
 
 .card {
-  background-color: #f7f7f7;
+  background-color: #555555;
   padding: 20px 25px 30px;
   margin: 50px auto 25px;
   -moz-border-radius: 2px;

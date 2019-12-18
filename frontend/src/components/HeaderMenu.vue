@@ -9,52 +9,17 @@
 </template>
 
 <script>
+import HeaderItem from '../models/header-item'
+
 export default {
   name: 'header-menu',
   data () {
     return {
       menuItems: [
-        {
-          // TODO: Make these a separate object
-          nameId: 'homePage',
-          name: 'Главная страница',
-          link: '/',
-          isOnRight: false,
-          onClick () {},
-          isActive: false
-        },
-        {
-          nameId: 'lotsList',
-          name: 'Список лотов',
-          link: '/lots_list',
-          isOnRight: false,
-          onClick () {},
-          isActive: false
-        },
-        {
-          nameId: 'contacts',
-          name: 'Контакты',
-          link: '/contacts',
-          isOnRight: false,
-          onClick () {},
-          isActive: false
-        },
-        {
-          nameId: 'about',
-          name: 'О нас',
-          link: '/about',
-          isOnRight: true,
-          onClick () {},
-          isActive: false
-        },
-        {
-          nameId: this.$cookies.get('SESSION') !== null ? 'profile' : 'login',
-          name: this.$cookies.get('SESSION') !== null ? this.$cookies.get('name') : 'Войти',
-          link: this.$cookies.get('SESSION') !== null ? '/profile' : '/login',
-          isOnRight: true,
-          onClick () {},
-          isActive: false
-        }
+        new HeaderItem('homePage', 'Главная страница', '/'),
+        new HeaderItem('lotsList', 'Список лотов', '/lots_list'),
+        new HeaderItem('contacts', 'Контакты', '/contacts'),
+        new HeaderItem('login', 'Войти', '/login', true)
       ]
     }
   },
@@ -70,24 +35,6 @@ export default {
     this.menuItems.forEach(function (value, index, array) {
       array[index]['isActive'] = (value['nameId'] === panel)
     })
-    // Check for session
-    if (this.$cookies.get('SESSION') !== null) {
-      const cookies = this.$cookies
-      this.menuItems.push({
-        nameId: 'logout',
-        name: 'Выйти',
-        link: '/',
-        onClick () {
-          console.log(cookies.keys())
-          cookies.remove('SESSION')
-            .remove('name')
-            .remove('surname')
-            .remove('userID')
-        },
-        isOnRight: true,
-        isActive: false
-      })
-    }
   }
 }
 </script>
