@@ -82,24 +82,27 @@ export default {
   methods: {
     handleLogin () {
       this.loading = true
-      this.$validator.validateAll()
 
-      if (this.errors.any()) {
-        this.loading = false
-        return
-      }
-
-      if (this.user.username && this.user.password) {
-        this.$store.dispatch('auth/login', this.user).then(
-          () => {
-            this.$router.push('/')
-          },
-          error => {
+      this.$validator.validateAll().then(
+        () => {
+          if (this.$validator.errors.any()) {
             this.loading = false
-            this.message = error.message
+            return
           }
-        )
-      }
+          if (this.user.username && this.user.password) {
+            this.$store.dispatch('auth/login', this.user).then(
+              () => {
+                this.$router.push('/')
+              },
+              error => {
+                this.loading = false
+                console.log(error)
+                this.message = error.message
+              }
+            )
+          }
+        }
+      )
     }
   }
 }

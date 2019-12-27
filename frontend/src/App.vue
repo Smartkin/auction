@@ -12,22 +12,22 @@ export default {
 
 <style>
 body {
-  background-color: #333333;
+  background-color: #d9d4d7;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #8bb4bb;
+  color: #475c63;
   margin-top: 60px;
 }
 a:link, a:visited {
-  color: #8bb4bb;
+  color: #191e22;
   text-decoration: none;
 }
 a:hover, a:active {
-  color: red;
+  color: #920000;
 }
 img {
   width: 10%;

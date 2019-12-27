@@ -73,12 +73,12 @@ public class AuthController {
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body("Ошибка: Ник уже занят");
+                    .body(new MessageResponse("Ошибка: Такой логин уже используется!"));
         }
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body("Ошибка: Такой email уже используется");
+                    .body(new MessageResponse("Ошибка: Такой email уже используется!"));
         }
 
         User user = new User(signupRequest.getName(), signupRequest.getSurname(),

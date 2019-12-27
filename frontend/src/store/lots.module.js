@@ -17,6 +17,7 @@ export const lots = {
         },
         error => {
           commit('bidFailed')
+          console.log(error.response.data)
           return Promise.resolve(error.response.data)
         }
       )

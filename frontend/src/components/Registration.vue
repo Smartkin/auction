@@ -9,42 +9,42 @@
             <input
               type="text"
               class="form-control"
-              name="username"
+              name="имя"
               v-model="user.name"
               v-validate="'required|min:3|max:20'"
             />
             <div
               class="alert-danger"
-              v-if="submitted && errors.has('name')"
-            >{{errors.first('name')}}</div>
+              v-if="submitted && errors.has('имя')"
+            >{{errors.first('имя')}}</div>
           </div>
           <div class="form-group">
             <label for="surname">Фамилия</label>
             <input
               type="text"
               class="form-control"
-              name="username"
+              name="фамилия"
               v-model="user.surname"
               v-validate="'required|min:3|max:20'"
             />
             <div
               class="alert-danger"
-              v-if="submitted && errors.has('surname')"
-            >{{errors.first('surname')}}</div>
+              v-if="submitted && errors.has('фамилия')"
+            >{{errors.first('фамилия')}}</div>
           </div>
           <div class="form-group">
             <label for="username">Логин</label>
             <input
               type="text"
               class="form-control"
-              name="username"
+              name="логин"
               v-model="user.username"
               v-validate="'required|min:3|max:20'"
             />
             <div
               class="alert-danger"
-              v-if="submitted && errors.has('username')"
-            >{{errors.first('username')}}</div>
+              v-if="submitted && errors.has('логин')"
+            >{{errors.first('логин')}}</div>
           </div>
           <div class="form-group">
             <label for="email">Email</label>
@@ -65,14 +65,14 @@
             <input
               type="password"
               class="form-control"
-              name="password"
+              name="пароль"
               v-model="user.password"
               v-validate="'required|min:6|max:40'"
             />
             <div
               class="alert-danger"
-              v-if="submitted && errors.has('password')"
-            >{{errors.first('password')}}</div>
+              v-if="submitted && errors.has('пароль')"
+            >{{errors.first('пароль')}}</div>
           </div>
           <div class="form-group">
             <button class="btn btn-primary btn-block">Зарегистрироваться</button>

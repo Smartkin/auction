@@ -4,12 +4,18 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import cookies from 'vue-cookies'
 import VeeValidate from 'vee-validate'
-Vue.use(cookies)
-cookies.config('30d') // Store cookies for a month by default
+import rumessages from 'vee-validate/dist/locale/ru'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.config.productionTip = false
-Vue.use(VeeValidate)
+
+// Switch vee-validate to Russian language
+VeeValidate.Validator.localize({ru: rumessages})
+Vue.use(VeeValidate, {locale: 'ru'})
+
+Vue.use(BootstrapVue)
 
 /* eslint-disable no-new */
 new Vue({
