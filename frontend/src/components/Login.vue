@@ -109,25 +109,25 @@ export default {
 </script>
 
 <style scoped>
-label {
-  display: block;
-  margin-top: 10px;
-}
+/*label {*/
+/*  display: block;*/
+/*  margin-top: 10px;*/
+/*}*/
 
-.card-container.card {
-  max-width: 350px !important;
-  padding: 40px 40px;
-}
+/*.card-container.card {*/
+/*  max-width: 350px !important;*/
+/*  padding: 40px 40px;*/
+/*}*/
 
-.card {
-  background-color: #555555;
-  padding: 20px 25px 30px;
-  margin: 50px auto 25px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  border-radius: 2px;
-  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-}
+/*.card {*/
+/*  background-color: #e1e1e1;*/
+/*  padding: 20px 25px 30px;*/
+/*  margin: 50px auto 25px;*/
+/*  -moz-border-radius: 2px;*/
+/*  -webkit-border-radius: 2px;*/
+/*  border-radius: 2px;*/
+/*  -moz-box-shadow: 0px 2px 2px rgba(255, 255, 255, 0.3);*/
+/*  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);*/
+/*  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);*/
+/*}*/
 </style>

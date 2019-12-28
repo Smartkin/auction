@@ -1,20 +1,20 @@
 <template>
   <header style="position: fixed; top: 0; width: 100%; z-index: 100">
-    <b-navbar type="dark" variant="info">
-      <b-navbar-brand to="/">Античный тороговец</b-navbar-brand>
-      <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
-          <b-nav-item v-for="item in leftItems" :to="item.link" :active="item.isActive" :key="item.id" :id="item.nameId" @click="item.onClick">
-            {{item.name}}
-          </b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
-      <b-navbar-nav>
-        <b-nav-item v-for="item in rightItems" :to="item.link" :active="item.isActive" :key="item.id" :id="item.nameId" @click="item.onClick">
-          {{item.name}}
-        </b-nav-item>
-      </b-navbar-nav>
-    </b-navbar>
+<!--    <b-navbar type="dark" variant="info">-->
+<!--      <b-navbar-brand to="/">Античный тороговец</b-navbar-brand>-->
+<!--      <b-collapse id="nav-collapse" is-nav>-->
+<!--        <b-navbar-nav>-->
+<!--          <b-nav-item v-for="item in leftItems" :to="item.link" :active="item.isActive" :key="item.id" :id="item.nameId" @click="item.onClick">-->
+<!--            {{item.name}}-->
+<!--          </b-nav-item>-->
+<!--        </b-navbar-nav>-->
+<!--      </b-collapse>-->
+<!--      <b-navbar-nav>-->
+<!--        <b-nav-item v-for="item in rightItems" :to="item.link" :active="item.isActive" :key="item.id" :id="item.nameId" @click="item.onClick">-->
+<!--          {{item.name}}-->
+<!--        </b-nav-item>-->
+<!--      </b-navbar-nav>-->
+<!--    </b-navbar>-->
   </header>
 </template>
 

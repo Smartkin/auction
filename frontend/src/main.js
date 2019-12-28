@@ -6,22 +6,22 @@ import router from './router'
 import store from './store'
 import VeeValidate from 'vee-validate'
 import rumessages from 'vee-validate/dist/locale/ru'
-import BootstrapVue from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import '@mdi/font/css/materialdesignicons.css'
+import 'roboto-fontface/css/roboto/roboto-fontface.css'
+import 'vuetify/dist/vuetify.css'
+import vuetify from './plugins/vuetify'
 Vue.config.productionTip = false
 
 // Switch vee-validate to Russian language
 VeeValidate.Validator.localize({ru: rumessages})
 Vue.use(VeeValidate, {locale: 'ru'})
 
-Vue.use(BootstrapVue)
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   store,
+  vuetify,
   components: { App },
   template: '<App/>'
 })

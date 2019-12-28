@@ -148,7 +148,7 @@ label {
 }
 
 .card {
-  background-color: #555555;
+  background-color: #dddddd;
   padding: 20px 25px 30px;
   margin: 50px auto 25px;
   -moz-border-radius: 2px;

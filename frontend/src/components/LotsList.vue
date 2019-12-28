@@ -1,7 +1,5 @@
 <template>
   <div class='lots-list'>
-    <header-menu active-panel="lotsList"/>
-    <p>Список лотов</p>
     <b-container fluid>
       <b-list-group>
         <b-list-group-item v-for="lot in listOfLots" v-bind:key="lot.id" variant="dark">
