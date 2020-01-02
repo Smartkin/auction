@@ -5,12 +5,16 @@ import com.badcompany.auction.entities.Lot;
 import com.badcompany.auction.payload.request.BidRequest;
 import com.badcompany.auction.payload.request.LotRequest;
 import com.badcompany.auction.payload.response.MessageResponse;
+import com.badcompany.auction.payload.response.PriceResponse;
 import com.badcompany.auction.repositories.LotRepository;
 import com.badcompany.auction.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -77,5 +81,11 @@ public class LotsController {
         lotRepository.save(bidLot);
 
         return ResponseEntity.ok(new MessageResponse("Ставка сделана!"));
+    }
+
+    @MessageMapping("/lotPrice/{lotId}")
+    @SendTo("/lots/priceChange/{lotId}")
+    public PriceResponse priceMessager(@DestinationVariable String lotId) {
+        return new PriceResponse(String.valueOf(lotRepository.getFirstById(Long.parseLong(lotId))));
     }
 }
