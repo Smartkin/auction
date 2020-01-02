@@ -2,53 +2,40 @@
   <div class="login">
     <header-menu active-panel="login"/>
     <div class="card card-container">
-      <form name="form" @submit.prevent="handleLogin">
-        <div class="form-group">
-          <label for="username">Логин</label>
-          <input
-            type="text"
-            class="form-control"
-            name="username"
-            v-model="user.username"
-            v-validate="'required'"
-          />
-          <div
-            class="alert alert-danger"
-            role="alert"
-            v-if="errors.has('username')"
-          >Требуется ввести ник!</div>
-        </div>
-        <div class="form-group">
-          <label for="password">Пароль</label>
-          <input
-            type="password"
-            class="form-control"
-            name="password"
-            v-model="user.password"
-            v-validate="'required'"
-          />
-          <div
-            class="alert alert-danger"
-            role="alert"
-            v-if="errors.has('password')"
-          >Требуется ввести пароль!</div>
-        </div>
-        <div class="form-group">
-          <button class="btn btn-primary btn-block" :disabled="loading">
-            <span class="spinner-border spinner-border-sm" v-show="loading"/>
-            <span>Войти</span>
-          </button>
-        </div>
-        <div class="form-group">
+      <validation-observer ref="loginForm" v-slot="{ invalid, validated, passes, validate }">
+        <v-form name="form" @submit.prevent="handleLogin">
+          <validation-provider name="Логин" rules="required" v-slot="{ errors, valid }">
+            <v-text-field
+              type="text"
+              class="form-control"
+              label="Логин"
+              v-model="user.username"
+              :error-messages="errors"
+              :success="valid"
+              required
+            />
+          </validation-provider>
+          <validation-provider name="Пароль" rules="required" v-slot="{ errors, valid }">
+            <v-text-field
+              type="password"
+              class="form-control"
+              name="password"
+              label="Пароль"
+              v-model="user.password"
+              :error-messages="errors"
+              :success="valid"
+              required
+            />
+          </validation-provider>
+          <v-btn type="submit" color="primary" :disabled="invalid" :loading="loading">
+            Войти
+          </v-btn>
           <div class="alert alert-danger" role="alert" v-if="message">{{message}}</div>
-        </div>
-      </form>
-      <router-link to="/register">
-        <button class="btn btn-primary btn-block" :disabled="loading">
-          <span class="spinner-border spinner-border-sm" v-show="loading"/>
-          <span>Регистрация</span>
-        </button>
-      </router-link>
+        </v-form>
+      </validation-observer>
+      <v-btn color="info" class="btn btn-primary btn-block" to="/register" :loading="loading">
+        Регистрация
+      </v-btn>
     </div>
   </div>
 </template>
@@ -56,11 +43,14 @@
 <script>
 import HeaderMenu from './HeaderMenu'
 import User from '../models/user'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 
 export default {
   name: 'login',
   components: {
-    HeaderMenu
+    HeaderMenu,
+    ValidationProvider,
+    ValidationObserver
   },
   data () {
     return {
@@ -82,25 +72,14 @@ export default {
   methods: {
     handleLogin () {
       this.loading = true
-
-      this.$validator.validateAll().then(
+      this.$store.dispatch('auth/login', this.user).then(
         () => {
-          if (this.$validator.errors.any()) {
-            this.loading = false
-            return
-          }
-          if (this.user.username && this.user.password) {
-            this.$store.dispatch('auth/login', this.user).then(
-              () => {
-                this.$router.push('/')
-              },
-              error => {
-                this.loading = false
-                console.log(error)
-                this.message = error.message
-              }
-            )
-          }
+          this.$router.push('/')
+        },
+        error => {
+          this.loading = false
+          console.log(error)
+          this.message = error.message
         }
       )
     }

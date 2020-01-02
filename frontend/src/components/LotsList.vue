@@ -1,46 +1,38 @@
 <template>
   <div class='lots-list'>
-    <b-container fluid>
-      <b-list-group>
-        <b-list-group-item v-for="lot in listOfLots" v-bind:key="lot.id" variant="dark">
-          <router-link v-bind:to="lot.link">
-            <b-col>
-              <b-col>
-                <placeholder width="200" height="200" text="Лот"/>
-              </b-col>
-              {{ lot.name }} за {{ lot.price }} рублей
-              <p>Выставлено пользователем {{ lot.owner.username }}</p>
-              <p v-if="lot.bidder !== null">Выкупается пользователем {{ lot.bidder.username }}</p>
-            </b-col>
-          </router-link>
-          <b-form @submit.prevent="handleBid(lot.id)">
-            <b-form-input placeholder="Введите значение шага ставки" type="number" :id="'повышение' + lot.id"/>
-            <b-alert :show="showInputError[lot.id]" variant="danger" dismissible>{{formMessage}}</b-alert>
-            <b-button class="mt-3" block type="submit" variant="info">Повысить</b-button>
-          </b-form>
-          <b-alert variant="danger" v-if="errorMessage">{{errorMessage}}</b-alert>
-        </b-list-group-item>
-      </b-list-group>
-    </b-container>
+    <LotCard
+      v-for="lot in listOfLots"
+      :key="lot.id"
+      variant="dark"
+      :lot-id="lot.id"
+      :lot-name="lot.name"
+      :lot-owner="lot.owner ? lot.owner.username : ''"
+      :price="lot.price.toString()"
+      :stomp-client="stompClient"
+      :server-connected="connectionEstablished"
+      :lot-bidder="lot.bidder ? lot.bidder.username : ''">
+    </LotCard>
   </div>
 </template>
 
 <script>
 import HeaderMenu from './HeaderMenu'
 import Placeholder from './Placeholder'
-import { ValidationProvider } from 'vee-validate'
+import LotCard from './LotCard'
 import Lot from '../models/lot'
 import User from '../models/user'
 import Bid from '../models/bid'
 import LotsService from '../services/lots.service'
 import UserService from '../services/user.service'
+import SockJS from 'sockjs-client'
+import Stomp from 'webstomp-client'
 
 export default {
   name: 'lots-list',
   components: {
     HeaderMenu,
     Placeholder,
-    ValidationProvider
+    LotCard
   },
   data () {
     return {
@@ -52,10 +44,26 @@ export default {
       submitId: -1,
       errorMessage: '',
       formMessage: 'Число должно быть больше единицы',
-      showInputError: [false]
+      showInputError: [false],
+      stompClient: null,
+      connectionEstablished: false
     }
   },
   mounted () {
+    let socket = new SockJS('/auction-websocket')
+    console.log(socket)
+    this.stompClient = Stomp.over(socket)
+    console.log(this.stompClient)
+    this.stompClient.connect({}, frame => {
+      console.log(frame)
+      for (let i in this.listOfLots) {
+        this.stompClient.subscribe('/lots/priceChange/' + this.listOfLots[i].id, newPrice => {
+          console.log(newPrice)
+          this.listOfLots[i].price = JSON.parse(newPrice.body).newPrice
+        })
+      }
+      this.connectionEstablished = true
+    })
     // Get lots information
     LotsService.getLots().then(
       response => {
@@ -91,6 +99,13 @@ export default {
         this.listOfLots.push(error.response.data.message)
       }
     )
+  },
+  beforeDestroy () {
+    console.log('Disconnecting from the server')
+    for (let i in this.listOfLots) {
+      this.stompClient.unsubscribe('/lots/priceChange/' + this.listOfLots[i].id)
+    }
+    this.stompClient.disconnect()
   },
   methods: {
     handleBid (lotId) {

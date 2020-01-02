@@ -1,8 +1,21 @@
 <template>
   <div id="app">
     <v-app light>
-      <v-navigation-drawer v-model="drawer" app>
+      <v-navigation-drawer color="primary" v-model="drawer" app>
         <template v-if="$vuetify.breakpoint.smAndDown">
+          <v-list-item>
+            <v-list-item-content>
+              <router-link to="/" style="text-decoration: none; color: black">
+                <v-list-item-title class="title">
+                  Античный Торговец
+                </v-list-item-title>
+              </router-link>
+              <v-list-item-subtitle>
+                Аукцион антиквариата
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider/>
           <v-list nav>
             <v-list-item to="/">
               <v-list-item-icon>
@@ -31,20 +44,35 @@
           </v-list>
         </template>
       </v-navigation-drawer>
-      <v-app-bar dense app>
+      <v-app-bar color="primary" dense app>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
-        <v-toolbar-title class="mr-4">Античный Торговец</v-toolbar-title>
+        <router-link to="/" style="text-decoration: none; color: black" v-if="$vuetify.breakpoint.mdAndUp">
+          <v-toolbar-title class="mr-4">Античный Торговец</v-toolbar-title>
+        </router-link>
         <v-toolbar-items v-if="$vuetify.breakpoint.mdAndUp">
-          <v-btn to="/">Главная страница</v-btn>
-          <v-btn to="/lots_list">Список лотов</v-btn>
-          <v-btn to="/contacts">О нас</v-btn>
+          <v-btn text to="/">Главная страница</v-btn>
+          <v-btn text to="/lots_list">Список лотов</v-btn>
+          <v-btn text to="/contacts">О нас</v-btn>
         </v-toolbar-items>
         <v-spacer/>
-        <v-text-field dense outlined clearable label="Поиск лотов" class="mt-6" prepend-icon="mdi-magnify" rounded/>
+        <v-text-field
+          dense
+          outlined
+          :clearable="$vuetify.breakpoint.mdAndUp"
+          color="accent"
+          label="Поиск лотов"
+          class="mt-6"
+          prepend-icon="mdi-magnify"
+          rounded/>
         <v-toolbar-items>
-          <v-btn icon to="/login">
+          <v-btn icon to="/login" v-if="!currentUser">
             <v-icon>mdi-login</v-icon>
           </v-btn>
+          <template v-if="currentUser">
+            <v-btn icon to="/profile">
+              <v-icon>mdi-account</v-icon>
+            </v-btn>
+          </template>
         </v-toolbar-items>
       </v-app-bar>
       <v-content>
@@ -54,7 +82,7 @@
       </v-content>
       <v-footer app>
         <v-col class="text-center">
-          {{ new Date().getFullYear() }} — <strong>Античный Торговец</strong>
+          2019-{{ new Date().getFullYear() }} — <strong>Античный Торговец</strong>
         </v-col>
       </v-footer>
     </v-app>
@@ -64,6 +92,11 @@
 <script>
 export default {
   name: 'App',
+  computed: {
+    currentUser () {
+      return this.$store.state.auth.user
+    }
+  },
   data: () => ({
     drawer: false
   })

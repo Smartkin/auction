@@ -36,9 +36,10 @@ class LotsService {
       }, {
         headers: authHeader()
       })
-      .then(this.handleResponse, reason => {
-        console.log(reason)
-        return Promise.reject(reason)
+      .then(this.handleResponse)
+      .then(response => {
+        console.log(response.data)
+        return response.data
       })
   }
 

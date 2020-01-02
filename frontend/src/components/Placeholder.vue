@@ -1,5 +1,5 @@
 <template>
-  <img alt="placeholder" src="../assets/placeholder.png">
+  <v-img alt="placeholder" src="../assets/placeholder.png"/>
 </template>
 
 <script>

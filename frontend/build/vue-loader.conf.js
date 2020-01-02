@@ -17,6 +17,8 @@ module.exports = {
     video: ['src', 'poster'],
     source: 'src',
     img: 'src',
-    image: 'xlink:href'
+    image: 'xlink:href',
+    'v-img': ['src', 'lazy-src'],
+    'v-card': 'img'
   }
 }
