@@ -8,3 +8,16 @@ Object.keys(rules).forEach(rule => {
     message: messages[rule]
   })
 })
+
+extend('agreeRequired', {
+  ...rules['required'],
+  message: 'Требуется согласие с пользовательским соглашением'
+})
+
+extend('equalTo', {
+  validate (value, { otherValue, fieldName }) {
+    return value === otherValue
+  },
+  params: ['otherValue', 'fieldName'],
+  message: 'Поле {_field_} должно быть равным полю {fieldName}'
+})

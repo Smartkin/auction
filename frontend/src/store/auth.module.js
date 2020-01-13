@@ -35,7 +35,7 @@ export const auth = {
         },
         error => {
           commit('registerFailure')
-          return Promise.resolve(error.response.data)
+          return Promise.reject(error.response.data)
         }
       )
     }

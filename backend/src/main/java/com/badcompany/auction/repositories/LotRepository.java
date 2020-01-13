@@ -12,5 +12,5 @@ public interface LotRepository extends JpaRepository<Lot, Long> {
     Lot findFirstByIdIsNotNull();
     Lot getFirstByIdAfter(Long id);
     @Query(value = "SELECT PRICE FROM LOT WHERE ID = :id", nativeQuery = true)
-    Long getFirstById(Long id);
+    Long getPriceById(Long id);
 }

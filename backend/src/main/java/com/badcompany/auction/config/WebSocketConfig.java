@@ -18,8 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/auction-websocket")
-                .setAllowedOrigins("http://localhost",
-                        "chrome-extension://ggnhohnkfcpcanfekomdkjffnfcjnjam")
+                .setAllowedOrigins("*")
                 .withSockJS();
     }
 }

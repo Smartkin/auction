@@ -17,7 +17,11 @@ module.exports = {
       },
       '/auction-websocket':{
         target: 'http://localhost:8080',
-        changeOrigin: true
+        ws: true,
+        changeOrigin: true,
+        proxyRes: proxyRes => {
+          console.log(proxyRes)
+        }
       }
     },
 

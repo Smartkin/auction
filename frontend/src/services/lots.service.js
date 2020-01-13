@@ -43,8 +43,33 @@ class LotsService {
       })
   }
 
+  createLot (lotObj) {
+    console.log(lotObj)
+    console.log(authHeader())
+    return axios
+      .post(API_URL + '/create', {
+        name: lotObj.name,
+        description: lotObj.description,
+        endDate: lotObj.endDate,
+        startPrice: lotObj.startPrice,
+        buyout: lotObj.isBuyout ? 1 : 0
+      }, {
+        headers: authHeader()
+      })
+      .then(this.handleResponse)
+      .then(response => {
+        console.log(response.data)
+        return response.data
+      })
+  }
+
   handleResponse (response) {
     console.log(response)
+    if (response.status === 405 || response.status === 500) {
+      const error = response.data && response.data.message
+      console.log(error)
+      return Promise.reject(error)
+    }
     return Promise.resolve(response)
   }
 }

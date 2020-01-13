@@ -13,7 +13,7 @@
     <v-card-text>
       <div class="text--primary mb-3">{{ lotDescription }}</div>
       <div class="text--primary">Выкупается {{ lotBidder ? lotBidder : 'никем' }}</div>
-      <div class="text--primary headline">Цена лота: {{ newPrice ? newPrice : price }}</div>
+      <div class="text--primary headline">Цена лота: {{ newPrice ? newPrice : price }} ₽</div>
     </v-card-text>
     <v-card-actions>
       <validation-provider name="Шаг" rules="required|min_value:1" v-slot="{ errors, valid }">
@@ -80,10 +80,6 @@ export default {
       type: String,
       required: false
     },
-    stompClient: {
-      type: Object,
-      required: true
-    },
     serverConnected: {
       type: Boolean,
       required: true
@@ -109,7 +105,11 @@ export default {
         response => {
           this.loading = false
           console.log(response)
-          this.stompClient.send('/auction/lotPrice/' + this.lotId, JSON.stringify({}), {})
+          this.$store.dispatch('lots/send', {
+            link: '/auction/lotPrice/' + this.lotId,
+            payloadString: JSON.stringify({}),
+            headers: {}
+          })
           this.bidMessage = response.message
         },
         error => {

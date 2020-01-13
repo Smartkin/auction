@@ -1,36 +1,34 @@
 <template>
   <div class='lots-list'>
-    <LotCard
-      v-for="lot in listOfLots"
-      :key="lot.id"
-      variant="dark"
-      :lot-id="lot.id"
-      :lot-name="lot.name"
-      :lot-owner="lot.owner ? lot.owner.username : ''"
-      :price="lot.price.toString()"
-      :stomp-client="stompClient"
-      :server-connected="connectionEstablished"
-      :lot-bidder="lot.bidder ? lot.bidder.username : ''">
-    </LotCard>
+    <v-col cols="12">
+      <LotCard
+        class="mx-auto mb-3"
+        v-for="lot in listOfLots"
+        :key="lot.id"
+        variant="dark"
+        :lot-id="lot.id"
+        :lot-name="lot.name"
+        :lot-owner="lot.owner"
+        :lot-description="lot.description"
+        :price="lot.price.toString()"
+        :server-connected="serverConnected"
+        :lot-bidder="lot.bidder === '' ? 'никем' : lot.bidder">
+      </LotCard>
+    </v-col>
   </div>
 </template>
 
 <script>
-import HeaderMenu from './HeaderMenu'
 import Placeholder from './Placeholder'
 import LotCard from './LotCard'
 import Lot from '../models/lot'
-import User from '../models/user'
 import Bid from '../models/bid'
+import WebsockSubLink from '../models/WebsockSubLink'
 import LotsService from '../services/lots.service'
-import UserService from '../services/user.service'
-import SockJS from 'sockjs-client'
-import Stomp from 'webstomp-client'
 
 export default {
   name: 'lots-list',
   components: {
-    HeaderMenu,
     Placeholder,
     LotCard
   },
@@ -44,54 +42,50 @@ export default {
       submitId: -1,
       errorMessage: '',
       formMessage: 'Число должно быть больше единицы',
-      showInputError: [false],
-      stompClient: null,
-      connectionEstablished: false
+      showInputError: [false]
+    }
+  },
+  computed: {
+    currentUser () {
+      return this.$store.state.auth.user
+    },
+    serverConnected () {
+      if (this.currentUser) {
+        return this.$store.state.lots.status.serverConnected
+      }
+      return true
+    }
+  },
+  watch: {
+    serverConnected: function (connectStatus) {
+      if (connectStatus) {
+        console.log('Subscribing to things')
+        for (let i = 0; i < this.listOfLots.length; ++i) {
+          this.$store.dispatch('lots/subscribe',
+            new WebsockSubLink('/lots/dataChange/' + this.listOfLots[i].id,
+              newLotData => {
+                console.log(newLotData)
+                let lotData = JSON.parse(newLotData.body)
+                console.log(lotData)
+                this.listOfLots[i].bidder = lotData.bidder
+                this.listOfLots[i].price = lotData.price
+              }))
+        }
+      }
     }
   },
   mounted () {
-    let socket = new SockJS('/auction-websocket')
-    console.log(socket)
-    this.stompClient = Stomp.over(socket)
-    console.log(this.stompClient)
-    this.stompClient.connect({}, frame => {
-      console.log(frame)
-      for (let i in this.listOfLots) {
-        this.stompClient.subscribe('/lots/priceChange/' + this.listOfLots[i].id, newPrice => {
-          console.log(newPrice)
-          this.listOfLots[i].price = JSON.parse(newPrice.body).newPrice
-        })
-      }
-      this.connectionEstablished = true
-    })
     // Get lots information
     LotsService.getLots().then(
       response => {
-        let array = response.data['lots']
+        console.log(response)
+        let array = response.data
         console.log(array)
-        let parsedArray = []
-        for (const lot in array) {
-          parsedArray.push(JSON.parse(array[lot]))
-        }
-        console.log(parsedArray)
-        for (const parsedLot in parsedArray) {
-          let newLot = new Lot(parsedArray[parsedLot].id, '/lot/' + parsedArray[parsedLot].id,
-            parsedArray[parsedLot].name, '', parsedArray[parsedLot].price, new Bid(parsedArray[parsedLot].id, 0))
-          UserService.getUserById(parsedArray[parsedLot].ownerID).then(
-            response => {
-              let owner = JSON.parse(response.data.user)
-              // Get bidder information if a bidder exists
-              if (parsedArray[parsedLot].bidderID !== null) {
-                UserService.getUserById(parsedArray[parsedLot].bidderID).then(
-                  response => {
-                    let bidder = JSON.parse(response.data.user)
-                    newLot.setBidder(new User(bidder.name, bidder.surname, bidder.username, bidder.email))
-                  }
-                )
-              }
-              newLot.setOwner(new User(owner.name, owner.surname, owner.username, owner.email))
-            }
-          )
+        for (const arrayKey in array) {
+          let newLot = new Lot(array[arrayKey].id, '/lot/' + array[arrayKey].id,
+            array[arrayKey].name, array[arrayKey].owner, array[arrayKey].price,
+            new Bid(array[arrayKey].id, 0), array[arrayKey].bidder,
+            array[arrayKey].description)
           this.listOfLots.push(newLot)
         }
       },
@@ -99,13 +93,6 @@ export default {
         this.listOfLots.push(error.response.data.message)
       }
     )
-  },
-  beforeDestroy () {
-    console.log('Disconnecting from the server')
-    for (let i in this.listOfLots) {
-      this.stompClient.unsubscribe('/lots/priceChange/' + this.listOfLots[i].id)
-    }
-    this.stompClient.disconnect()
   },
   methods: {
     handleBid (lotId) {
@@ -124,27 +111,25 @@ export default {
         this.bid.lotId = lotId
         if (this.bid.priceIncrease) {
           this.$store.dispatch('lots/bid', this.bid).then(
-            () => {
-              this.$router.go(0)
-            },
+            () => {},
             error => {
               this.errorMessage = error.message
             }
           )
         }
       }
+    },
+    lotBidder (lotId) {
+      if (this.listOfLots[lotId]) {
+        if (this.listOfLots[lotId].bidder && this.currentUser) {
+          return this.listOfLots[lotId].bidder === this.currentUser ? 'Вами' : this.listOfLots[lotId].bidder
+        }
+        if (this.listOfLots[lotId].bidder) {
+          return this.listOfLots[lotId].bidder
+        }
+      }
+      return 'никем'
     }
   }
 }
 </script>
-
-<style>
-/*.lots-list{*/
-/*  list-style-type: none;*/
-/*}*/
-/*.lots-list-item{*/
-/*  text-align: left;*/
-/*  display: block;*/
-/*  padding-bottom: 30px;*/
-/*}*/
-</style>

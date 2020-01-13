@@ -19,16 +19,20 @@ public class User {
     private Long id;
 
     @NotBlank
+    @Size(max = 32)
     private String username;
     @NotBlank
+    @Size(max = 32)
     private String name;
     @NotBlank
+    @Size(max = 32)
     private String surname;
     @NotBlank
-    @Size(max = 120)
+    @Size(max = 128)
     private String password;
     @NotBlank
     @Email
+    @Size(max = 256)
     private String email;
 
     private String address1;

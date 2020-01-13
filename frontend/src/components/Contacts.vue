@@ -1,6 +1,5 @@
 <template>
   <div class="contacts">
-    <header-menu active-panel="contacts"/>
     <h2>Работу выполняли</h2>
     <ul>
       <li>Смышляев Владислав - Ведущий Разработчик</li>
@@ -12,13 +11,8 @@
 </template>
 
 <script>
-import HeaderMenu from './HeaderMenu'
-
 export default {
-  name: 'contacts',
-  components: {
-    HeaderMenu
-  }
+  name: 'contacts'
 }
 </script>
 

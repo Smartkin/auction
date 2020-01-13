@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 public class UserController {
 
@@ -15,9 +17,14 @@ public class UserController {
     UserRepository userRepository;
 
     @GetMapping("/api/users")
-    public String userHandler(@RequestParam(name = "id")Long id) throws JSONException {
+    public String userHandler(@RequestParam(name = "id")Long id, @RequestParam(name = "simple")Optional<Boolean> simple) throws JSONException {
         JSONObject answer = new JSONObject();
-        answer.put("user", userRepository.getOne(id));
+        if (!simple.isPresent()) {
+            answer.put("user", userRepository.getOne(id));
+        }
+        else {
+            answer.put("user", userRepository.getOne(id).getUsername());
+        }
         return answer.toString();
     }
 }

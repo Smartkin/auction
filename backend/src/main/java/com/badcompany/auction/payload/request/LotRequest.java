@@ -1,28 +1,42 @@
 package com.badcompany.auction.payload.request;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 public class LotRequest {
     @NotBlank
     @Size(min = 10, max = 50)
     private String name;
 
-    @NotBlank
     @Size(max = 1024)
     private String description;
 
-    @NotBlank
+    @DateTimeFormat
+    private Date endDate;
+
+    @NotNull
     private Long startPrice;
 
-    @NotBlank
-    private Boolean isBuyout;
+    @NotNull
+    private Long isBuyout;
 
-    public Boolean getBuyout() {
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Long getBuyout() {
         return isBuyout;
     }
 
-    public void setBuyout(Boolean buyout) {
+    public void setBuyout(Long buyout) {
         isBuyout = buyout;
     }
 

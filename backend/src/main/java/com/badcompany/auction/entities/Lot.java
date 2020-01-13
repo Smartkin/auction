@@ -3,9 +3,9 @@ package com.badcompany.auction.entities;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Entity
 public class Lot {
@@ -21,22 +21,29 @@ public class Lot {
     @NotNull
     private Long price;
     @NotNull
+    private Date startDate;
+    @NotNull
+    private Date endDate;
+    @NotNull
     private Long ownerID;
     private Long bidderID;
     @NotNull
-    private boolean isBuyout;
+    private Boolean isBuyout;
 
-    @Override
-    public String toString() {
-        return "{" +
-                "\"id\":" + id +
-                ", \"name\":\"" + name + '\"' +
-                ", \"description\":\"" +  '\"' +
-                ", \"price\":" + price +
-                ", \"ownerID\":" + ownerID +
-                ", \"bidderID\":" + bidderID +
-                ", \"isBuyout\":" + isBuyout +
-                '}';
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public String getDescription() {
@@ -110,6 +117,10 @@ public class Lot {
         this.ownerID=ownerID;
         this.price=price;
         this.description="Простое описание лота.";
+        this.startDate = new Date();
+        Date endDate = new Date();
+        endDate.setTime(endDate.getTime() + 10000000L * 360L);
+        this.endDate = endDate;
         this.isBuyout=isBuyout;
         this.name=name;
     }
@@ -118,6 +129,10 @@ public class Lot {
         this.ownerID=ownerID;
         this.price=price;
         this.description=description;
+        this.startDate = new Date();
+        Date endDate = new Date();
+        endDate.setTime(endDate.getTime() + 10000000L * 360L);
+        this.endDate = endDate;
         this.isBuyout=isBuyout;
         this.name=name;
     }

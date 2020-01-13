@@ -1,5 +1,5 @@
 export default class Lot {
-  constructor (id, link, name, owner, price, bid = null, bidder = null, description = '', categories = []) {
+  constructor (id, link, name, owner, price, bid = null, bidder = '', description = '', startDate = null, endDate = null, categories = []) {
     this.id = id
     this.link = link
     this.name = name
@@ -7,6 +7,8 @@ export default class Lot {
     this.price = price
     this.description = description
     this.bidder = bidder
+    this.startDate = startDate
+    this.endDate = endDate
     this.categories = categories
     this.bid = bid
   }

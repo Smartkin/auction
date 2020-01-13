@@ -7,6 +7,8 @@ import Login from '@/components/Login'
 import Profile from '@/components/Profile'
 import Lot from '@/components/Lot'
 import Registration from '@/components/Registration'
+import CreateLot from '@/components/CreateLot'
+import Logout from '@/components/Logout'
 
 Vue.use(Router)
 
@@ -33,6 +35,11 @@ export default new Router({
       component: Login
     },
     {
+      path: '/logout',
+      name: 'logout',
+      component: Logout
+    },
+    {
       path: '/profile',
       name: 'profile',
       component: Profile
@@ -47,6 +54,11 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: Registration
+    },
+    {
+      path: '/create_lot',
+      name: 'createLot',
+      component: CreateLot
     }
   ]
 })

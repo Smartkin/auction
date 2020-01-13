@@ -7,13 +7,13 @@ const opts = {
   theme: {
     themes: {
       light: {
-        primary: '#607d8b',
-        secondary: '#4caf50',
-        accent: '#ffc107',
+        primary: '#009688',
+        secondary: '#00bcd4',
+        accent: '#9c27b0',
         error: '#f44336',
-        warning: '#ff5722',
-        info: '#2196f3',
-        success: '#8bc34a'
+        warning: '#ffc107',
+        info: '#3f51b5',
+        success: '#4caf50'
       }
     }
   }
