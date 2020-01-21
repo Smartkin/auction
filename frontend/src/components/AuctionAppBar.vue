@@ -24,27 +24,58 @@
       <v-list
         tile
         dense
+        max-width="300"
+        min-width="300"
         elevation="0"
         flat
+        dark
         subheader
         expand
+        :color="color"
+        v-if="$vuetify.breakpoint.lgAndUp"
       >
-        <v-list-group no-action prepend-icon="mdi-account">
+        <v-list-group
+          color="white"
+          no-action
+          prepend-icon="mdi-account"
+          class="mt-1"
+        >
           <template v-slot:activator>
             <v-list-item-title>
               {{ currentUser ? currentUser.username : 'Гость' }}
             </v-list-item-title>
           </template>
-          <v-list-item to="/profile">
+          <v-list-item
+            to="/profile"
+            v-if="currentUser"
+            :color="color"
+            class="mt-1"
+            light
+          >
             <v-list-item-title>Личный кабинет</v-list-item-title>
             <v-list-item-icon>
               <v-icon>mdi-account</v-icon>
             </v-list-item-icon>
           </v-list-item>
+          <v-list-item
+            v-for="(action, i) in actions"
+            :key="i"
+            light
+            :to="action.link"
+            v-if="!currentUser"
+            :color="color"
+          >
+            <v-list-item-title v-text="action.name"/>
+            <v-list-item-icon>
+              <v-icon v-text="action.icon"/>
+            </v-list-item-icon>
+          </v-list-item>
           <v-list-group
             sub-group
             no-action
+            :color="color"
             value="true"
+            v-if="currentUser"
           >
             <template v-slot:activator>
               <v-list-item-content>
@@ -55,6 +86,7 @@
               v-for="(action, i) in actions"
               :key="i"
               :to="action.link"
+              light
             >
               <v-list-item-title v-text="action.name"/>
               <v-list-item-icon>
@@ -100,11 +132,6 @@ export default {
           name: 'Редактировать данные',
           icon: 'mdi-account-edit',
           link: '/edit_profile'
-        })
-        this.actions.push({
-          name: 'Пополнить баланс',
-          icon: 'mdi-account-cash',
-          link: '/add_balance'
         })
         this.actions.push({
           name: 'Выйти',

@@ -50,28 +50,10 @@ export default {
       return this.$store.state.auth.user
     },
     serverConnected () {
-      if (this.currentUser) {
-        return this.$store.state.lots.status.serverConnected
+      if (this.$store.state.lots.status.serverConnected) {
+        this.subscribeToLots(true)
       }
-      return true
-    }
-  },
-  watch: {
-    serverConnected: function (connectStatus) {
-      if (connectStatus) {
-        console.log('Subscribing to things')
-        for (let i = 0; i < this.listOfLots.length; ++i) {
-          this.$store.dispatch('lots/subscribe',
-            new WebsockSubLink('/lots/dataChange/' + this.listOfLots[i].id,
-              newLotData => {
-                console.log(newLotData)
-                let lotData = JSON.parse(newLotData.body)
-                console.log(lotData)
-                this.listOfLots[i].bidder = lotData.bidder
-                this.listOfLots[i].price = lotData.price
-              }))
-        }
-      }
+      return this.$store.state.lots.status.serverConnected
     }
   },
   mounted () {
@@ -79,15 +61,38 @@ export default {
     LotsService.getLots().then(
       response => {
         console.log(response)
-        let array = response.data
+        let array = []
+        for (const objIndex in response.data) {
+          array.push(JSON.parse(response.data[objIndex]))
+        }
         console.log(array)
         for (const arrayKey in array) {
+          let bidderName = ''
+          if (array[arrayKey].bidder !== null) {
+            // Since dependencies are bidirectional instead of an object we can get an index
+            // Find the required object
+            if (Number.isInteger(array[arrayKey].bidder)) {
+              let neededLot = array.find(obj => {
+                if (obj.bidder !== null) {
+                  return obj.bidder.id === array[arrayKey].bidder
+                }
+                return false
+              })
+              console.log(array)
+              console.log(neededLot)
+              bidderName = neededLot.bidder.username
+            } else {
+              // Otherwise just fetch the username
+              bidderName = array[arrayKey].bidder.username
+            }
+          }
           let newLot = new Lot(array[arrayKey].id, '/lot/' + array[arrayKey].id,
-            array[arrayKey].name, array[arrayKey].owner, array[arrayKey].price,
-            new Bid(array[arrayKey].id, 0), array[arrayKey].bidder,
+            array[arrayKey].name, array[arrayKey].owner.username, array[arrayKey].price,
+            new Bid(array[arrayKey].id, 0), bidderName,
             array[arrayKey].description)
           this.listOfLots.push(newLot)
         }
+        this.subscribeToLots(this.serverConnected)
       },
       error => {
         this.listOfLots.push(error.response.data.message)
@@ -129,6 +134,23 @@ export default {
         }
       }
       return 'никем'
+    },
+    subscribeToLots (connectStatus) {
+      if (connectStatus) {
+        console.log('Subscribing to things')
+        for (let i = 0; i < this.listOfLots.length; ++i) {
+          this.$store.dispatch('lots/subscribe',
+            new WebsockSubLink('/lots/dataChange/' + this.listOfLots[i].id,
+              newLotData => {
+                console.log(newLotData)
+                let lotData = JSON.parse(newLotData.body)
+                console.log(lotData)
+                this.listOfLots[i].bidder = lotData.bidder
+                this.listOfLots[i].price = lotData.price
+                console.log(this.listOfLots[i].bidder)
+              }))
+        }
+      }
     }
   }
 }

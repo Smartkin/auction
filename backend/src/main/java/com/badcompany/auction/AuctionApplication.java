@@ -1,9 +1,7 @@
 package com.badcompany.auction;
 
-import com.badcompany.auction.entities.ERole;
-import com.badcompany.auction.entities.Lot;
-import com.badcompany.auction.entities.Role;
-import com.badcompany.auction.entities.User;
+import com.badcompany.auction.entities.*;
+import com.badcompany.auction.repositories.ImageRepository;
 import com.badcompany.auction.repositories.LotRepository;
 import com.badcompany.auction.repositories.RoleRepository;
 import com.badcompany.auction.repositories.UserRepository;
@@ -29,6 +27,9 @@ public class AuctionApplication implements CommandLineRunner {
 	RoleRepository roleRepository;
 
 	@Autowired
+	ImageRepository imageRepository;
+
+	@Autowired
 	PasswordEncoder encoder;
 
 	public static void main(String[] args) {
@@ -37,35 +38,36 @@ public class AuctionApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		User eval = new User("Александр", "Кузнецов", "kuznec1337", encoder.encode("test_password"), "testmail@mail.ru");
-		User admin = new User("Admin", "Adminishe", "admin", encoder.encode("admin"), "admin@admin.admin");
-		User user = new User("Олег", "Простомолотов", "oleg228", encoder.encode("tester_pass"), "tester@localhost.com");
-		roleRepository.save(new Role(ERole.ROLE_ADMIN));
-		roleRepository.save(new Role(ERole.ROLE_EVALUATOR));
-		roleRepository.save(new Role(ERole.ROLE_USER));
-		Set<Role> roleEval = new HashSet<>();
-		Set<Role> roleAdmin = new HashSet<>();
-		Set<Role> roleUser = new HashSet<>();
-		roleEval.add(roleRepository.findByName(ERole.ROLE_EVALUATOR).get());
-		roleAdmin.add(roleRepository.findByName(ERole.ROLE_ADMIN).get());
-		roleUser.add(roleRepository.findByName(ERole.ROLE_USER).get());
-		eval.setRoles(roleEval);
-		admin.setRoles(roleAdmin);
-		user.setRoles(roleUser);
-		userRepository.save(eval);
-		userRepository.save(admin);
-		userRepository.save(user);
-		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 1000L, "Статуэтка из Украины 1880 года", false));
-		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 2000L, "Монета царского двора 1789 года", false));
-		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 3000L, "Серебро высокой пробы", false));
-		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 4000L, "Кольцо из древнего Рима", false));
-		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 5000L, "Монета старых годов", false));
-		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 6000L, "Кувшин из советских времён", false));
-		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 7000L, "Ещё один лот", false));
-		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 8000L, "Придумывать лоты сложно", false));
-		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 9000L, "Особенно когда до дедлайна считанные часы", false));
-		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 10000L, "Монета царского двора 1889 года", false));
-		lotRepository.save(new Lot(userRepository.getOne(3L).getId(), 11000L, "Монета царского двора 1849 года", false));
-		lotRepository.save(new Lot(userRepository.getOne(1L).getId(), 12000L, "Золото высокой пробы", false));
+//		imageRepository.save(new Image("/avatars/placeholder.png", EImageType.TYPE_USER));
+//		User eval = new User("Александр", "Кузнецов", "kuznec1337", encoder.encode("test_password"), "testmail@mail.ru", imageRepository.getOne(1L));
+//		User admin = new User("Admin", "Adminishe", "admin", encoder.encode("admin"), "admin@admin.admin", imageRepository.getOne(1L));
+//		User user = new User("Олег", "Простомолотов", "oleg228", encoder.encode("tester_pass"), "tester@localhost.com", imageRepository.getOne(1L));
+//		roleRepository.save(new Role(ERole.ROLE_ADMIN));
+//		roleRepository.save(new Role(ERole.ROLE_EVALUATOR));
+//		roleRepository.save(new Role(ERole.ROLE_USER));
+//		Set<Role> roleEval = new HashSet<>();
+//		Set<Role> roleAdmin = new HashSet<>();
+//		Set<Role> roleUser = new HashSet<>();
+//		roleEval.add(roleRepository.findByName(ERole.ROLE_EVALUATOR).get());
+//		roleAdmin.add(roleRepository.findByName(ERole.ROLE_ADMIN).get());
+//		roleUser.add(roleRepository.findByName(ERole.ROLE_USER).get());
+//		eval.setRoles(roleEval);
+//		admin.setRoles(roleAdmin);
+//		user.setRoles(roleUser);
+//		userRepository.save(eval);
+//		userRepository.save(admin);
+//		userRepository.save(user);
+//		lotRepository.save(new Lot(userRepository.getOne(1L), 1000L, "Статуэтка из Украины 1880 года", false));
+//		lotRepository.save(new Lot(userRepository.getOne(1L), 2000L, "Монета царского двора 1789 года", false));
+//		lotRepository.save(new Lot(userRepository.getOne(1L), 3000L, "Серебро высокой пробы", false));
+//		lotRepository.save(new Lot(userRepository.getOne(3L), 4000L, "Кольцо из древнего Рима", false));
+//		lotRepository.save(new Lot(userRepository.getOne(3L), 5000L, "Монета старых годов", false));
+//		lotRepository.save(new Lot(userRepository.getOne(3L), 6000L, "Кувшин из советских времён", false));
+//		lotRepository.save(new Lot(userRepository.getOne(1L), 7000L, "Ещё один лот", false));
+//		lotRepository.save(new Lot(userRepository.getOne(1L), 8000L, "Придумывать лоты сложно", false));
+//		lotRepository.save(new Lot(userRepository.getOne(3L), 9000L, "Особенно когда до дедлайна считанные часы", false));
+//		lotRepository.save(new Lot(userRepository.getOne(3L), 10000L, "Монета царского двора 1889 года", false));
+//		lotRepository.save(new Lot(userRepository.getOne(3L), 11000L, "Монета царского двора 1849 года", false));
+//		lotRepository.save(new Lot(userRepository.getOne(1L), 12000L, "Золото высокой пробы", false));
 	}
 }

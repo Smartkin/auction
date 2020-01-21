@@ -3,7 +3,7 @@
     <v-form>
       <v-container fluid class="lot-create">
         <v-row>
-          <v-col cols="4">
+          <v-col md="4" cols="12">
             <v-row align="stretch" justify="center">
               <placeholder v-if="images.length === 0"/>
               <v-carousel
@@ -17,22 +17,24 @@
                 />
               </v-carousel>
             </v-row>
-            <v-row class="mt-3 mr-3">
-<!--              <validation-provider name="фотографии" rules="required|image" v-slot="{ errors, valid }">-->
-                <v-file-input
-                  single-line
-                  show-size
-                  filled
-                  multiple
-                  counter
-                  dense
-                  placeholder="Фотографии лота..."
-                  accept=".jpeg,.png"
-                  prepend-icon="mdi-camera"
-                  @change="imagesUploaded"
-                />
-<!--              </validation-provider>-->
-            </v-row>
+            <validation-provider name="фотографии" rules="required|size:2000|image" v-slot="{ errors, valid }">
+              <v-file-input
+                class="mt-3"
+                single-line
+                show-size
+                filled
+                multiple
+                counter
+                dense
+                full-width
+                placeholder="Фотографии лота..."
+                accept=".jpeg,.png,.gif"
+                prepend-icon="mdi-camera"
+                :error-messages="errors"
+                @change="imagesUploaded"
+                v-model="images_"
+              />
+            </validation-provider>
           </v-col>
           <v-col>
             <validated-text-field
@@ -42,23 +44,21 @@
               v-model="newLot.name"
             />
             <validated-text-field
-              label="Цена"
-              field-name="цена"
-              rules="required|numeric|min:4"
+              label="Стартовая цена"
+              field-name="стартовая цена"
+              rules="required|numeric|min_value:1000"
               type="numeric"
               v-model="newLot.startPrice"
+              suffix=".00 ₽"
             />
-            <v-row align="center" justify="space-around">
-              <v-col cols="4">
-                <p class="title">Дата окончания выставления</p>
-                <validation-provider name="дата окончания" rules="required"  v-slot="{ errors, valid }">
-                  <v-date-picker
-                    show-current
-                    locale="ru"
-                    v-model="newLot.endDate"
-                  />
-                </validation-provider>
-              </v-col>
+            <validated-text-field
+              label="Количество дней выставления"
+              field-name="количество дней"
+              rules="required|numeric|min_value:1"
+              type="numeric"
+              v-model="newLot.days"
+            />
+            <v-row>
               <v-col>
                 <validation-provider name="описание" rules="max:1024" v-slot="{ errors, valid }">
                   <v-textarea
@@ -73,12 +73,21 @@
                     :error-messages="errors"
                   />
                 </validation-provider>
-                <v-row>
-                  <v-checkbox label="Возможность выкупа" v-model="newLot.isBuyout"/>
-                  <v-alert dense dismissible v-model="showAlert">
-                    {{ message }}
-                  </v-alert>
-                </v-row>
+                <v-checkbox label="Возможность выкупа" v-model="newLot.isBuyout"/>
+                <v-expand-transition>
+                  <v-card class="transparent" flat v-show="newLot.isBuyout">
+                    <validated-text-field
+                      label="Цена выкупа"
+                      field-name="цена выкупа"
+                      :rules="newLot.isBuyout ? 'required|' : '' + 'numeric|min_value:' + newLot.startPrice"
+                      type="numeric"
+                      v-model="newLot.buyoutPrice"
+                    />
+                  </v-card>
+                </v-expand-transition>
+                <v-alert dense dismissible v-model="showAlert">
+                  {{ message }}
+                </v-alert>
               </v-col>
             </v-row>
             <v-btn :disabled="invalid" color="primary" depressed block @click="passes(createLot)">
@@ -100,12 +109,18 @@ export default {
   data () {
     return {
       newLot: {
-        isBuyout: false
+        name: '',
+        startPrice: 1000,
+        days: 1,
+        isBuyout: false,
+        buyoutPrice: null
       },
       images: [],
       files: [],
+      images_: [],
       message: '',
-      showAlert: false
+      showAlert: false,
+      today: new Date().toISOString()
     }
   },
   computed: {
@@ -129,10 +144,12 @@ export default {
       console.log('create lot: ' + this.newLot)
       this.$store.dispatch('lots/create', this.newLot).then(
         response => {
+          console.log(response.message)
           this.message = response.message
           this.showAlert = true
         },
         error => {
+          console.log(error.data.message)
           this.message = error.data.message
           this.showAlert = true
         }

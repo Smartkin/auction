@@ -1,6 +1,7 @@
 package com.badcompany.auction.controllers;
 
 import com.badcompany.auction.entities.ERole;
+import com.badcompany.auction.entities.Image;
 import com.badcompany.auction.entities.Role;
 import com.badcompany.auction.entities.User;
 import com.badcompany.auction.payload.request.LoginRequest;
@@ -61,11 +62,7 @@ public class AuthController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                                                userDetails.getId(),
-                                                userDetails.getUsername(),
-                                                userDetails.getEmail(),
-                                                roles));
+        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), roles));
     }
 
     @PostMapping("/signup")
@@ -83,7 +80,7 @@ public class AuthController {
 
         User user = new User(signupRequest.getName(), signupRequest.getSurname(),
                 signupRequest.getUsername(), encoder.encode(signupRequest.getPassword()),
-                signupRequest.getEmail());
+                signupRequest.getEmail(), new Image());
 
         Set<String> strRoles = signupRequest.getRole();
         Set<Role> roles = new HashSet<>();

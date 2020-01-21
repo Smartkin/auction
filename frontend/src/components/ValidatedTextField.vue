@@ -8,6 +8,8 @@
                 v-on="$listeners"
                 :error-messages="errors"
                 :success="valid"
+                :prefix="prefix"
+                :suffix="suffix"
         />
     </validation-provider>
 </template>
@@ -52,6 +54,14 @@ export default {
     fieldName: {
       type: String,
       required: true
+    },
+    suffix: {
+      type: String,
+      default: ''
+    },
+    prefix: {
+      type: String,
+      default: ''
     }
   }
 }

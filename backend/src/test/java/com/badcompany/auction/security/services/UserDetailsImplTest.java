@@ -1,5 +1,6 @@
 package com.badcompany.auction.security.services;
 
+import com.badcompany.auction.entities.Image;
 import com.badcompany.auction.entities.User;
 import org.junit.Test;
 import org.junit.Assert;
@@ -27,7 +28,7 @@ public class UserDetailsImplTest {
 
     UserDetailsImpl UserDetails = new UserDetailsImpl(1L, "Test", "TestName", "TestSurName", "Test@test.ru", "testpassword", authorities);
     UserDetailsImpl UserTest = new UserDetailsImpl(1L, "Test", "TestName", "TestSurName", "Test@test.ru", "testpassword", authorities);
-    User user = new User(1L, "Test", "Test", "Test", "test");
+    User user = new User("Test", "Test", "Test", "test", "test@test.com", new Image());
     @Test
     public void build()
     {

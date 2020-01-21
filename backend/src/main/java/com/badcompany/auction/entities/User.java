@@ -1,19 +1,26 @@
 package com.badcompany.auction.entities;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,15 +28,20 @@ public class User {
     @NotBlank
     @Size(max = 32)
     private String username;
+
     @NotBlank
     @Size(max = 32)
     private String name;
+
     @NotBlank
     @Size(max = 32)
     private String surname;
+
     @NotBlank
     @Size(max = 128)
+    @JsonIgnore
     private String password;
+
     @NotBlank
     @Email
     @Size(max = 256)
@@ -42,9 +54,20 @@ public class User {
     private String state;
     private Long zipcode;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "avatar_id")
+    @NotNull
+    private Image avatar;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    private Set<Lot> owningLots = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bidder")
+    private Set<Lot> biddingLots = new HashSet<>();
 
     public String getUsername() {
         return username;
@@ -150,42 +173,41 @@ public class User {
         this.roles = roles;
     }
 
+    public Image getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Image avatar) {
+        this.avatar = avatar;
+    }
+
+    public Set<Lot> getOwningLots() {
+        return owningLots;
+    }
+
+    public void setOwningLots(Set<Lot> owningLots) {
+        this.owningLots = owningLots;
+    }
+
+    public Set<Lot> getBiddingLots() {
+        return biddingLots;
+    }
+
+    public void setBiddingLots(Set<Lot> biddingLots) {
+        this.biddingLots = biddingLots;
+    }
+
     public User(){
         super();
     }
 
-    public User(Long id, String name, String surname, String password, String email){
-        super();
-        this.id=id;
-        this.name=name;
-        this.password = password;
-        this.surname = surname;
-        this.email = email;
-    }
-
-    public User(String name, String surname, String username, String password, String email){
+    public User(String name, String surname, String username, String password, String email, Image avatar){
         super();
         this.name=name;
         this.username = username;
         this.password = password;
         this.surname = surname;
         this.email = email;
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-                "\"id\":" + id +
-                ", \"username\":\"" + username + '\"' +
-                ", \"name\":\"" + name + '\"' +
-                ", \"surname\":\"" + surname + '\"' +
-                ", \"email\":\"" + email + '\"' +
-                ", \"address1\":\"" + address1 + '\"' +
-                ", \"address2\":\"" + address2 + '\"' +
-                ", \"country\":\"" + country + '\"' +
-                ", \"city\":\"" + city + '\"' +
-                ", \"state\":\"" + state + '\"' +
-                ", \"zipcode\":" + zipcode +
-                '}';
+        this.avatar = avatar;
     }
 }

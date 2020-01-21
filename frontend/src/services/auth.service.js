@@ -11,7 +11,7 @@ class AuthService {
       })
       .then(this.handleResponse)
       .then(response => {
-        console.log(response.data)
+        console.log('User: ' + response.data)
         if (response.data.token) {
           console.log('Registered user token')
           localStorage.setItem('user', JSON.stringify(response.data))
