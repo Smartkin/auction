@@ -8,7 +8,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: mirromutth/mysql-action@v1.1
+    - uses: samin/mysql-action@v1.3
       with:
         mysql root password: root
         # MYSQL_DATABASE - name for the default database that is created
