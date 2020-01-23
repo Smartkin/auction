@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HomePage from '@/components/HomePage'
-import Contacts from '@/components/Contacts'
-import LotsList from '@/components/LotsList'
-import Login from '@/components/Login'
-import Profile from '@/components/Profile'
-import Lot from '@/components/Lot'
-import Registration from '@/components/Registration'
-import CreateLot from '@/components/CreateLot'
-import Logout from '@/components/Logout'
+import HomePage from '@/views/HomePage'
+import Contacts from '@/views/Contacts'
+import LotsList from '@/views/LotsList'
+import Login from '@/views/Login'
+import Profile from '@/views/Profile'
+import Lot from '@/views/Lot'
+import Registration from '@/views/Registration'
+import CreateLot from '@/views/CreateLot'
+import Logout from '@/views/Logout'
 
 Vue.use(Router)
 

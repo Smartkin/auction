@@ -17,7 +17,7 @@ public class Lot {
     private Long id;
 
     @NotNull
-    @Size(min = 10, max = 50)
+    @Size(min = 10, max = 128)
     private String name;
 
     @NotNull

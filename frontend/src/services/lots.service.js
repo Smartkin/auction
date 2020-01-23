@@ -13,13 +13,17 @@ class LotsService {
     })
   }
 
-  getLots (count = 5, id = -1) {
+  getLots (page = 1, category = null, amount = 5, id = -1) {
     let paramsObj = {
-      count: count,
+      amount: amount,
+      page: page,
       type: 'multiple'
     }
+    if (category !== null) {
+      paramsObj.category = category
+    }
     if (id !== -1) {
-      paramsObj['id'] = id
+      paramsObj.id = id
     }
     return axios.get(API_URL, {
       params: paramsObj

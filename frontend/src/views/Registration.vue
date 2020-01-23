@@ -77,7 +77,7 @@
 <script>
 import {ValidationObserver, ValidationProvider} from 'vee-validate'
 import User from '../models/user'
-import ValidatedTextField from './ValidatedTextField'
+import ValidatedTextField from '../components/ValidatedTextField'
 
 export default {
   name: 'register',

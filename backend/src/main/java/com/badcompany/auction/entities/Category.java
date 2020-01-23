@@ -1,8 +1,16 @@
 package com.badcompany.auction.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -10,6 +18,12 @@ public class Category {
 
     @Column(unique = true)
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category mainCategory;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "mainCategory")
+    private Set<Category> subCategory = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -25,5 +39,51 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Category getMainCategory() {
+        return mainCategory;
+    }
+
+    public void setMainCategory(Category mainCategory) {
+        this.mainCategory = mainCategory;
+    }
+
+    public Set<Category> getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(Set<Category> subCategory) {
+        this.subCategory = subCategory;
+    }
+
+    public Category() {
+        super();
+    }
+
+    public Category(Long id, String name) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.mainCategory = null;
+    }
+
+    public Category(Long id, String name, Category mainCategory) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.mainCategory = mainCategory;
+    }
+
+    public Category(String name) {
+        super();
+        this.name = name;
+        this.mainCategory = null;
+    }
+
+    public Category(String name, Category mainCategory) {
+        super();
+        this.name = name;
+        this.mainCategory = mainCategory;
     }
 }

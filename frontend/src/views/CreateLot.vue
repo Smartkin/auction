@@ -101,9 +101,9 @@
 </template>
 
 <script>
-import Placeholder from './Placeholder'
+import Placeholder from '../components/Placeholder'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import ValidatedTextField from './ValidatedTextField'
+import ValidatedTextField from '../components/ValidatedTextField'
 
 export default {
   data () {

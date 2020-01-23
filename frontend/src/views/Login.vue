@@ -45,6 +45,7 @@
 <script>
 import User from '../models/user'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import UserService from '../services/user.service'
 
 export default {
   name: 'login',
@@ -74,6 +75,11 @@ export default {
       this.loading = true
       this.$store.dispatch('auth/login', this.user).then(
         () => {
+          UserService.getUserById(this.$store.state.auth.user.id).then(
+            user => {
+              console.log(user.data)
+            }
+          )
           this.$router.push('/')
         },
         error => {

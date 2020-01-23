@@ -1,5 +1,5 @@
 <template>
-  <v-card :loading="!serverConnected" :disabled="!serverConnected" min-width="200" max-width="600" color="white">
+  <v-card :loading="!serverConnected" :disabled="!serverConnected" min-width="200" color="white">
     <v-progress-linear slot="progress" indeterminate height="10" color="primary"/>
     <v-img height="200px"
            alt="placeholder"

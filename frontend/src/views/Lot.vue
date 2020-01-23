@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Placeholder from './Placeholder'
+import Placeholder from '../components/Placeholder'
 
 export default {
   components: {

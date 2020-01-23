@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import LotCard from './LotCard'
+import LotCard from '../components/LotCard'
 
 export default {
   components: {
