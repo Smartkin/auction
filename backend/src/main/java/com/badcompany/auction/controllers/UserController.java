@@ -2,6 +2,8 @@ package com.badcompany.auction.controllers;
 
 import com.badcompany.auction.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -20,13 +22,21 @@ public class UserController {
 
     @GetMapping("/api/users")
     public String userHandler(@RequestParam(name = "id")Long id, @RequestParam(name = "simple")Optional<Boolean> simple) throws JSONException, IOException {
-        JSONObject answer = new JSONObject();
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+        filterProvider.setDefaultFilter(SimpleBeanPropertyFilter.serializeAll());
+        filterProvider.addFilter("UserOwnLotFilter", SimpleBeanPropertyFilter.serializeAllExcept("owner"));
+        filterProvider.addFilter("UserBidLotFilter", SimpleBeanPropertyFilter.serializeAllExcept("bidder"));
+        filterProvider.addFilter("LotOwnerFilter", SimpleBeanPropertyFilter.serializeAllExcept("owningLots", "biddingLots"));
+        filterProvider.addFilter("LotBidderFilter", SimpleBeanPropertyFilter.serializeAllExcept("owningLots", "biddingLots"));
+        mapper.setFilterProvider(filterProvider);
+        String resString;
         if (!simple.isPresent()) {
-            answer.put("user", new ObjectMapper().writeValueAsString(userRepository.getOne(id)));
+            resString = mapper.writeValueAsString(userRepository.getOne(id));
         }
         else {
-            answer.put("user", userRepository.getOne(id).getUsername());
+            resString = "{\"user\": \"" + userRepository.getOne(id).getUsername() + "\"}";
         }
-        return answer.toString();
+        return resString;
     }
 }

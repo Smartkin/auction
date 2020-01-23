@@ -12,9 +12,12 @@ import com.badcompany.auction.repositories.UserRepository;
 import com.badcompany.auction.security.services.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -38,12 +41,24 @@ public class LotsController {
     UserRepository userRepository;
 
     @GetMapping
-    public @ResponseBody ResponseEntity<?> lotsHandler(@RequestParam(name = "type")String type, @RequestParam(name = "page")Optional<Long> pageNum, @RequestParam(name = "id")Optional<Long> id, @RequestParam(name = "count")Optional<Long> count) throws JSONException, JsonProcessingException {
+    public @ResponseBody ResponseEntity<?> lotsHandler(@RequestParam(name = "type")String type,
+                                                       @RequestParam(name = "page")Optional<Long> pageNum,
+                                                       @RequestParam(name = "id")Optional<Long> id,
+                                                       @RequestParam(name = "count")Optional<Long> count)
+            throws JSONException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        // Setup a filter since we only need usernames
+        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+        filterProvider.addFilter("LotOwnerFilter", SimpleBeanPropertyFilter.filterOutAllExcept("username"));
+        filterProvider.addFilter("LotBidderFilter", SimpleBeanPropertyFilter.filterOutAllExcept("username"));
+        mapper.setFilterProvider(filterProvider);
+        // Fetch lots from the database
         List<String> lotList = new ArrayList<>();
         switch(type){
             case "single":
                 if (id.isPresent()){
-                    lotList.add(new ObjectMapper().writeValueAsString(lotRepository.getOne(id.get())));
+                    Lot lot = lotRepository.getOne(id.get());
+                    lotList.add(mapper.writeValueAsString(lot));
                 }
                 break;
             case "multiple":
@@ -51,16 +66,17 @@ public class LotsController {
                 if (id.isPresent()){
                     lotsFirst = lotRepository.getOne(id.get());
                 }
-                lotList.add(new ObjectMapper().writeValueAsString(lotsFirst));
-                Long lotAmt = 5L;
+                lotList.add(mapper.writeValueAsString(lotsFirst));
+                long lotAmt = 5L;
                 if (count.isPresent())
                     lotAmt = count.get();
                 for(long i = 0L; i < lotAmt - 1; ++i) {
                     lotsFirst = lotRepository.getFirstByIdAfter(lotsFirst.getId());
-                    lotList.add(new ObjectMapper().writeValueAsString(lotsFirst));
+                    lotList.add(mapper.writeValueAsString(lotsFirst));
                 }
                 break;
         }
+        // Send the result
         return ResponseEntity.ok(lotList.toArray());
     }
 

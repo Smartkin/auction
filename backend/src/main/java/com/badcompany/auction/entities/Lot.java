@@ -1,9 +1,6 @@
 package com.badcompany.auction.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 public class Lot {
     @Id
@@ -42,10 +38,12 @@ public class Lot {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
+    @JsonFilter("LotOwnerFilter")
     private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bidder_id")
+    @JsonFilter("LotBidderFilter")
     private User bidder;
 
     @NotNull

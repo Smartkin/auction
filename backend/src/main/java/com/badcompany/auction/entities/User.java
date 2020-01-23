@@ -14,7 +14,6 @@ import java.util.Set;
 
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
@@ -64,9 +63,11 @@ public class User implements Serializable {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    @JsonFilter("UserOwnLotFilter")
     private Set<Lot> owningLots = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bidder")
+    @JsonFilter("UserBidLotFilter")
     private Set<Lot> biddingLots = new HashSet<>();
 
     public String getUsername() {

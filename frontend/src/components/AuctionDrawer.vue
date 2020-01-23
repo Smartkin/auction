@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer dark color="primary" v-model="resultDrawer" app>
+  <v-navigation-drawer clipped dark color="primary" v-model="resultDrawer" app>
     <template v-if="$vuetify.breakpoint.mdAndDown">
       <v-list-item>
         <v-list-item-content>

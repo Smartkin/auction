@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar :color="color" dense app>
+  <v-app-bar clipped-left :color="color" dense app>
     <v-app-bar-nav-icon @click.stop="$emit('drawer-change', !drawer)"/>
     <router-link to="/" style="text-decoration: none;" v-if="$vuetify.breakpoint.lgAndUp">
       <v-toolbar-title class="mr-4 white--text">Античный Торговец</v-toolbar-title>
