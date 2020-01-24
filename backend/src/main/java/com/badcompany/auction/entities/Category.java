@@ -1,8 +1,6 @@
 package com.badcompany.auction.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -20,9 +18,11 @@ public class Category {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Category mainCategory;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "mainCategory")
+    @JsonFilter("SubCategoryFilter")
     private Set<Category> subCategory = new HashSet<>();
 
     public Long getId() {

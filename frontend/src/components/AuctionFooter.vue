@@ -5,10 +5,10 @@
         Помощь
       </v-btn>
     </v-col>
-    <v-col class="text-center black--text">
+    <v-col class="text-center black--text" v-if="$vuetify.breakpoint.smAndUp">
       2019-{{ new Date().getFullYear() }} — <strong>Античный Торговец</strong>
     </v-col>
-    <v-col class="text-center">
+    <v-col class="text-center" v-if="$vuetify.breakpoint.mdAndUp">
       <v-btn color="info" class="mt-n1" block to="/use_policy">
         Условия использования сервиса
       </v-btn>

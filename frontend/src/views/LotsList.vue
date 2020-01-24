@@ -2,7 +2,7 @@
   <div class='lots-list'>
     <v-container fluid>
       <v-row dense>
-        <v-col cols="2">
+        <v-col md="2" cols="12">
           <v-label>Количество лотов на странице</v-label>
           <v-overflow-btn
             label="Количество лотов на странице"
@@ -13,7 +13,7 @@
             dense
           />
         </v-col>
-        <v-col cols="10">
+        <v-col md="10" cols="12">
           <LotCard
             class="mx-auto mb-3"
             v-for="lot in listOfLots"
@@ -25,7 +25,9 @@
             :lot-description="lot.description"
             :price="lot.price.toString()"
             :server-connected="serverConnected"
-            :lot-bidder="lot.bidder === '' ? 'никем' : lot.bidder">
+            :lot-bidder="lot.bidder === '' ? 'никем' : lot.bidder"
+            :page-loading="loading"
+          >
           </LotCard>
           <v-pagination @input="switchPage" v-model="curPage" color="primary" total-visible="10" :length="pages"/>
         </v-col>
@@ -61,7 +63,19 @@ export default {
       formMessage: 'Число должно быть больше единицы',
       showInputError: [false],
       pages: 1,
-      curPage: 1
+      curPage: 1,
+      loading: false
+    }
+  },
+  props: {
+    category: {
+      type: String,
+      default: 'all'
+    }
+  },
+  watch: {
+    category: function () {
+      this.switchPage()
     }
   },
   computed: {
@@ -73,6 +87,15 @@ export default {
         this.subscribeToLots(true)
       }
       return this.$store.state.lots.status.serverConnected
+    },
+    resultCategory: {
+      get: function () {
+        return this.category
+      },
+      set: function (newCategory) {
+        console.log('Received new category: ' + newCategory)
+        this.category = newCategory
+      }
     }
   },
   mounted () {
@@ -133,10 +156,10 @@ export default {
       }
     },
     switchPage () {
-      this.listOfLots.length = 0
-      this.pages = 1
-      LotsService.getLots(this.curPage, 'Букинистические антикварные книги', this.loadAmount).then(
+      this.loading = true
+      LotsService.getLots(this.curPage, this.category, this.loadAmount).then(
         response => {
+          this.listOfLots.length = 0
           console.log(response)
           let array = JSON.parse(response.data.lots)
           this.pages = response.data.pages
@@ -144,24 +167,7 @@ export default {
           for (const arrayKey in array) {
             let bidderName = ''
             if (array[arrayKey].bidder !== null) {
-              // Since dependencies are bidirectional instead of an object we can get an index
-              // Find the required object
-              console.log(array[arrayKey])
-              console.log(array[arrayKey].bidder)
-              if (Number.isInteger(array[arrayKey].bidder)) {
-                let neededLot = array.find(obj => {
-                  if (obj.bidder !== null) {
-                    return obj.bidder.id === array[arrayKey].bidder
-                  }
-                  return false
-                })
-                console.log(array)
-                console.log(neededLot)
-                bidderName = neededLot.bidder.username
-              } else {
-                // Otherwise just fetch the username
-                bidderName = array[arrayKey].bidder.username
-              }
+              bidderName = array[arrayKey].bidder.username
             }
             let newLot = new Lot(array[arrayKey].id, '/lot/' + array[arrayKey].id,
               array[arrayKey].name, array[arrayKey].owner.username, array[arrayKey].price,
@@ -170,6 +176,7 @@ export default {
             this.listOfLots.push(newLot)
           }
           this.subscribeToLots(this.serverConnected)
+          this.loading = false
         },
         error => {
           this.listOfLots.push(error.response.data.message)

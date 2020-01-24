@@ -25,9 +25,10 @@ export default new Router({
       component: Contacts
     },
     {
-      path: '/lots_list',
+      path: '/lots_list/:category',
       name: 'lots_list',
-      component: LotsList
+      component: LotsList,
+      props: true
     },
     {
       path: '/login',

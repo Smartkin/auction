@@ -1,5 +1,5 @@
 <template>
-  <v-card :loading="!serverConnected" :disabled="!serverConnected" min-width="200" color="white">
+  <v-card :loading="!serverConnected || pageLoading" :disabled="!serverConnected || pageLoading" min-width="200" color="white">
     <v-progress-linear slot="progress" indeterminate height="10" color="primary"/>
     <v-img height="200px"
            alt="placeholder"
@@ -83,6 +83,10 @@ export default {
     serverConnected: {
       type: Boolean,
       required: true
+    },
+    pageLoading: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

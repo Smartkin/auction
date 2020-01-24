@@ -61,6 +61,7 @@ public class LotsController {
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
         filterProvider.addFilter("LotOwnerFilter", SimpleBeanPropertyFilter.filterOutAllExcept("username"));
         filterProvider.addFilter("LotBidderFilter", SimpleBeanPropertyFilter.filterOutAllExcept("username"));
+        filterProvider.addFilter("SubCategoryFilter", SimpleBeanPropertyFilter.serializeAllExcept("mainCategory"));
         mapper.setFilterProvider(filterProvider);
         // Fetch lots from the database
         String lotList = "[]";

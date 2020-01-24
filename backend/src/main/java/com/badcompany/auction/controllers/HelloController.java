@@ -10,7 +10,7 @@ public class HelloController {
     @GetMapping("/api/hello")
     public String helloHandler() throws JSONException {
         JSONObject answer = new JSONObject();
-        answer.accumulate("message", "Hello World!");
+        answer.put("message", "Hello World!");
         return answer.toString();
     }
 }

@@ -6,7 +6,7 @@
     </router-link>
     <v-toolbar-items v-if="$vuetify.breakpoint.lgAndUp">
       <v-btn depressed :color="color" to="/">Главная страница</v-btn>
-      <v-btn depressed :color="color" to="/lots_list">Список лотов</v-btn>
+      <v-btn depressed :color="color" to="/lots_list/all">Список лотов</v-btn>
       <v-btn depressed :color="color" to="/contacts">О нас</v-btn>
     </v-toolbar-items>
     <v-spacer/>

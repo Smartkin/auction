@@ -1,11 +1,11 @@
 <template>
   <div id="app">
     <v-app light>
-      <AuctionDrawer :drawer="drawer" @drawer-change="onDrawerChange"/>
+      <AuctionDrawer :drawer="drawer" @category-change="onCategoryChange" @drawer-change="onDrawerChange"/>
       <AuctionAppBar :drawer="drawer" @drawer-change="onDrawerChange"/>
       <v-content>
         <v-container fluid>
-          <router-view/>
+          <router-view :category="category"/>
         </v-container>
       </v-content>
       <AuctionFooter/>
@@ -31,7 +31,8 @@ export default {
   },
   data () {
     return {
-      drawer: false
+      drawer: false,
+      category: 'all'
     }
   },
   mounted () {
@@ -44,6 +45,10 @@ export default {
   methods: {
     onDrawerChange: function (newDrawer) {
       this.drawer = newDrawer
+    },
+    onCategoryChange: function (newCategory) {
+      console.log('Category change: ' + newCategory)
+      this.category = newCategory
     }
   }
 }

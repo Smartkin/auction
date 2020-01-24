@@ -19,7 +19,7 @@ class LotsService {
       page: page,
       type: 'multiple'
     }
-    if (category !== null) {
+    if (category !== null && category !== 'all') {
       paramsObj.category = category
     }
     if (id !== -1) {
