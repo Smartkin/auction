@@ -5,7 +5,18 @@ on: [push]
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0.19
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test
+        ports:
+            - '8888:3306'
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          
 
     steps:
     - uses: actions/checkout@v1
@@ -14,6 +25,10 @@ jobs:
       with:
         java-version: 1.8
         architecture: x64
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+    - uses: actions/setup-node@v1.1.0
+      with:
+        # Version Spec of the version to use.  Examples: 10.x, 10.15.1, >=10.15.0, lts
+        version: 13.1 # optional, default is 10.x
+    - name: Setup MySQL & Build with Maven
+      run: mysql -h 127.0.0.1 --port 3306 -u root -proot -e 'CREATE DATABASE IF NOT EXISTS testdb CHARACTER SET latin1;' && sudo npm install -g node-gyp && mvn -B package --file pom.xml
  
