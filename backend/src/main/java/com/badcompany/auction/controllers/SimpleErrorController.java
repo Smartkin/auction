@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 @Controller
 public class SimpleErrorController implements ErrorController {
@@ -22,7 +24,7 @@ public class SimpleErrorController implements ErrorController {
 
     @PostMapping(PATH)
     public ResponseEntity<?> errorPost() {
-        return new ResponseEntity<Object>(new MessageResponse("Нет прав! Возможно требуется авторизация!"), HttpStatus.FORBIDDEN);
+        return ResponseEntity.badRequest().body(new MessageResponse("Ошибка! Возможно требуется авторизация! Или была попытка использования недействительных данных!"));
     }
 
     @Override

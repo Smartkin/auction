@@ -1,9 +1,11 @@
 import AuthService from '../services/auth.service'
+import UserService from '../services/user.service'
 
 const user = JSON.parse(localStorage.getItem('user'))
+console.log(user)
 
 const initialState = user
-  ? { status: { loggedIn: true }, user }
+  ? { status: { loggedIn: true, dataAcquired: true }, user }
   : { status: {}, user: null }
 
 export const auth = {
@@ -15,7 +17,10 @@ export const auth = {
         user => {
           console.log(commit)
           commit('loginSuccess', user)
-          return Promise.resolve(user)
+          return UserService.getUserById(user.id).then(response => {
+            console.log(response)
+            commit('fetchUserDataSuccessful', response.data)
+          })
         },
         error => {
           commit('loginFailure')
@@ -26,6 +31,12 @@ export const auth = {
     logout ({ commit }) {
       AuthService.logout()
       commit('logout')
+    },
+    fetchUserData ({ commit }, user) {
+      UserService.getUserById(user.id).then(response => {
+        console.log(response)
+        commit('fetchUserDataSuccessful', response.data)
+      })
     },
     register ({ commit }, user) {
       return AuthService.register(user).then(
@@ -48,6 +59,15 @@ export const auth = {
     loginFailure (state) {
       state.status = {}
       state.user = null
+    },
+    fetchUserDataSuccessful (state, userData) {
+      state.status.dataAcquired = true
+      state.user.data = userData
+      let userState = state.user
+      state.user = null
+      state.user = userState
+      console.log(state.user)
+      localStorage.setItem('user', JSON.stringify(state.user))
     },
     logout (state) {
       state.status = {}

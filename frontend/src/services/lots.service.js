@@ -13,17 +13,22 @@ class LotsService {
     })
   }
 
-  getLots (page = 1, category = null, amount = 5, id = -1) {
-    let paramsObj = {
-      amount: amount,
-      page: page,
-      type: 'multiple'
+  getLots (paramsObj) {
+    // page = 1, category = null, amount = 5, id = -1
+    if (!paramsObj.hasOwnProperty('page')) {
+      paramsObj.page = 1
     }
-    if (category !== null && category !== 'all') {
-      paramsObj.category = category
+    if (!paramsObj.hasOwnProperty('amount')) {
+      paramsObj.amount = 5
     }
-    if (id !== -1) {
-      paramsObj.id = id
+    if (!paramsObj.hasOwnProperty('type')) {
+      paramsObj.type = 'multiple'
+    }
+    if (!paramsObj.hasOwnProperty('multipleType')) {
+      paramsObj.multipleType = ''
+    }
+    if (paramsObj.category === null || paramsObj.category === 'all') {
+      paramsObj.category = undefined
     }
     return axios.get(API_URL, {
       params: paramsObj
@@ -50,17 +55,42 @@ class LotsService {
   createLot (lotObj) {
     console.log(lotObj)
     console.log(authHeader())
-    return axios
-      .post(API_URL + '/create', {
-        name: lotObj.name,
-        description: lotObj.description,
-        endDate: lotObj.endDate,
-        startPrice: lotObj.startPrice,
-        buyout: lotObj.isBuyout ? 1 : 0
-      }, {
-        headers: authHeader()
+    let timeAmount = lotObj.days * 24 * 60 * 60 * 1000
+    let headers = authHeader()
+    let dataObj = {
+      name: lotObj.name,
+      description: lotObj.description,
+      timeAmount: timeAmount,
+      startPrice: lotObj.startPrice,
+      buyout: lotObj.isBuyout ? 1 : 0
+    }
+    return axios({
+      method: 'post',
+      url: API_URL + '/create',
+      data: dataObj,
+      headers: headers
+    }).then(this.handleResponse)
+      .then(response => {
+        console.log(response.data)
+        return response.data
       })
-      .then(this.handleResponse)
+  }
+
+  uploadImages (images, lotId) {
+    let headers = authHeader()
+    console.log(images)
+    headers['Content-Type'] = 'multipart/form-data'
+    let data = new FormData()
+    data.set('lotId', lotId)
+    images.forEach(image => {
+      data.append('images', image)
+    })
+    return axios({
+      method: 'post',
+      url: API_URL + '/uploadImages',
+      data: data,
+      headers: headers
+    }).then(this.handleResponse)
       .then(response => {
         console.log(response.data)
         return response.data

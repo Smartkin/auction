@@ -1,5 +1,6 @@
 package com.badcompany.auction.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Image implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lot_id")
+    @JsonIgnore
     private Lot lot;
 
     public Long getId() {
@@ -88,5 +90,13 @@ public class Image implements Serializable {
         this.fileName = fileName;
         this.status = EStatus.STATUS_USED;
         this.type = type;
+    }
+
+    public Image(String fileName, Lot lot) {
+        super();
+        this.fileName = fileName;
+        this.status = EStatus.STATUS_USED;
+        this.type = EImageType.TYPE_LOT;
+        this.lot = lot;
     }
 }

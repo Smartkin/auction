@@ -60,7 +60,7 @@
             />
             <v-row>
               <v-col>
-                <validation-provider name="описание" rules="max:1024" v-slot="{ errors, valid }">
+                <validation-provider name="описание" rules="required|max:1024" v-slot="{ errors, valid }">
                   <v-textarea
                     label="Описание лота"
                     rows="24"
@@ -82,6 +82,7 @@
                       :rules="newLot.isBuyout ? 'required|' : '' + 'numeric|min_value:' + newLot.startPrice"
                       type="numeric"
                       v-model="newLot.buyoutPrice"
+                      suffix=".00 ₽"
                     />
                   </v-card>
                 </v-expand-transition>
@@ -102,6 +103,7 @@
 
 <script>
 import Placeholder from '../components/Placeholder'
+import LotsService from '../services/lots.service'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import ValidatedTextField from '../components/ValidatedTextField'
 
@@ -142,9 +144,14 @@ export default {
   methods: {
     createLot () {
       console.log('create lot: ' + this.newLot)
+      this.newLot.images = this.images
       this.$store.dispatch('lots/create', this.newLot).then(
         response => {
           console.log(response.message)
+          console.log(this.files)
+          LotsService.uploadImages(this.files, response.lotId).then(response => {
+            this.message = response.message
+          })
           this.message = response.message
           this.showAlert = true
         },

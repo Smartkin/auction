@@ -30,7 +30,7 @@
             <v-list-item-title>Главная страница</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item to="/lots_list/all">
+        <v-list-item to="/lots_list">
           <v-list-item-icon>
             <v-icon>mdi-format-list-bulleted</v-icon>
           </v-list-item-icon>
@@ -101,6 +101,7 @@ export default {
   mounted () {
     CategoryService.getCategories().then(categories => {
       this.categories = categories
+      this.categories.push({ name: 'Все' })
     })
   },
   props: {
@@ -115,7 +116,6 @@ export default {
       console.log(this.$router.currentRoute)
       if (!this.$router.currentRoute.path.includes(categoryObject.name)) {
         console.log('Switched category')
-        this.$router.push('/lots_list/' + categoryObject.name)
         this.$emit('category-change', categoryObject.name)
       }
     }

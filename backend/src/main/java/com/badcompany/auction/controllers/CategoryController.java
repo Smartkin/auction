@@ -26,9 +26,6 @@ public class CategoryController {
     @GetMapping
     public @ResponseBody ResponseEntity<?> categoryHandler(@RequestParam(name = "id")Optional<Long> id) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-        filterProvider.addFilter("SubCategoryFilter", SimpleBeanPropertyFilter.serializeAllExcept("mainCategory"));
-        mapper.setFilterProvider(filterProvider);
         List<Category> cat;
         if (id.isPresent()) {
             cat = new ArrayList<>();

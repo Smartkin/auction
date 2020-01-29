@@ -22,7 +22,6 @@ public class Category {
     private Category mainCategory;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "mainCategory")
-    @JsonFilter("SubCategoryFilter")
     private Set<Category> subCategory = new HashSet<>();
 
     public Long getId() {

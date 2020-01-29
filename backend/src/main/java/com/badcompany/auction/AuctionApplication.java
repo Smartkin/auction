@@ -2,15 +2,21 @@ package com.badcompany.auction;
 
 import com.badcompany.auction.entities.*;
 import com.badcompany.auction.repositories.*;
+//import com.badcompany.auction.search.LotSearchRepository;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.*;
 
 @SpringBootApplication
+//@EnableElasticsearchRepositories(basePackages = "com.badcompany.auction.search")
+//@EnableJpaRepositories(basePackages = {"com.badcompany.auction.entities", "com.badcompany.auction.repositories"})
 public class AuctionApplication implements CommandLineRunner {
 
 	@Autowired
@@ -30,6 +36,9 @@ public class AuctionApplication implements CommandLineRunner {
 
 	@Autowired
 	PasswordEncoder encoder;
+
+	@Autowired
+	RestHighLevelClient client;
 
 	public static void main(String[] args) {
 		SpringApplication.run(AuctionApplication.class, args);
@@ -181,8 +190,8 @@ public class AuctionApplication implements CommandLineRunner {
 	private void initLots() {
 		Random rand = new Random(new Date().getTime());
 		List<Category> categories = categoryRepository.findAll();
-		// Find amount of lots in each category
-		int lotAmount = 100000;
+		// Amount of lots
+		int lotAmount = 1000;
 		String lotDescription = "Таким образом реализация намеченных плановых заданий позволяет оценить значение новых предложений. Равным образом консультация с широким активом требуют определения и уточнения модели развития. Повседневная практика показывает, что укрепление и развитие структуры обеспечивает широкому кругу (специалистов) участие в формировании дальнейших направлений развития. Если у вас есть какие то интересные предложения, обращайтесь! Студия Web-Boss всегда готова решить любую задачу. Значимость этих проблем настолько очевидна, что дальнейшее развитие различных форм деятельности обеспечивает широкому кругу (специалистов) участие в формировании новых предложений. Таким образом реализация намеченных плановых заданий позволяет оценить значение новых предложений. Идейные соображения высшего порядка, а также укрепление и развитие структуры играет важную роль в формировании существенных финансовых и административных условий.";
 		for(int i = 0; i < lotAmount; ++i) {
 			User user = userRepository.getOne(1L + rand.nextInt(999));

@@ -8,27 +8,31 @@
             label="Количество лотов на странице"
             :items="lotsAmt"
             v-model="loadAmount"
-            @input="switchPage"
+            @input="onLotAmtOnPage"
             auto-select-first
             dense
           />
         </v-col>
         <v-col md="10" cols="12">
-          <LotCard
-            class="mx-auto mb-3"
-            v-for="lot in listOfLots"
-            :key="lot.id"
-            variant="dark"
-            :lot-id="lot.id"
-            :lot-name="lot.name"
-            :lot-owner="lot.owner"
-            :lot-description="lot.description"
-            :price="lot.price.toString()"
-            :server-connected="serverConnected"
-            :lot-bidder="lot.bidder === '' ? 'никем' : lot.bidder"
-            :page-loading="loading"
-          >
-          </LotCard>
+          <v-list style="max-height: 700px" class="overflow-y-auto">
+            <LotCard
+              class="mx-auto mb-3"
+              v-for="lot in listOfLots"
+              :key="lot.id"
+              variant="dark"
+              :lot-id="lot.id"
+              :lot-name="lot.name"
+              :lot-owner="lot.owner"
+              :lot-description="lot.description"
+              :price="lot.price.toString()"
+              :server-connected="serverConnected"
+              :lot-bidder="lot.bidder === '' ? 'никем' : lot.bidder"
+              :page-loading="loading"
+              :start-date="lot.startDate"
+              :end-date="lot.endDate"
+              :images="lot.images"
+            />
+          </v-list>
           <v-pagination @input="switchPage" v-model="curPage" color="primary" total-visible="10" :length="pages"/>
         </v-col>
       </v-row>
@@ -71,10 +75,17 @@ export default {
     category: {
       type: String,
       default: 'all'
+    },
+    parentParams: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   watch: {
     category: function () {
+      console.log('Switched lots list category')
       this.switchPage()
     }
   },
@@ -155,9 +166,37 @@ export default {
         }
       }
     },
-    switchPage () {
+    onLotAmtOnPage (newLotAmt) {
+      this.switchPage()
+    },
+    switchPage (toPage = 1) {
+      console.log(toPage)
+      console.log(this.category)
       this.loading = true
-      LotsService.getLots(this.curPage, this.category, this.loadAmount).then(
+      this.curPage = toPage
+      let multipleType = 'all'
+      if (this.category !== 'all') {
+        multipleType = 'categories'
+      }
+      let params = {
+        page: this.parentParams.toPage ? this.parentParams.toPage : toPage,
+        category: this.parentParams.category ? this.parentParams.category : this.category,
+        amount: this.parentParams.amount ? this.parentParams.amount : this.loadAmount,
+        multipleType: this.parentParams.multipleType ? this.parentParams.multipleType : multipleType,
+        owner: this.parentParams.owner,
+        bidder: this.parentParams.bidder
+      }
+      if (params.category !== 'all' && params.category !== 'Все') {
+        if (params.owner) {
+          params.multipleType = 'categories&owner'
+        } else if (params.bidder) {
+          params.multipleType = 'categories&bidder'
+        }
+      } else {
+        params.category = this.parentParams.hasOwnProperty('multipleType') ? null : 'Все'
+      }
+      console.log(params.category)
+      LotsService.getLots(params).then(
         response => {
           this.listOfLots.length = 0
           console.log(response)
@@ -172,7 +211,9 @@ export default {
             let newLot = new Lot(array[arrayKey].id, '/lot/' + array[arrayKey].id,
               array[arrayKey].name, array[arrayKey].owner.username, array[arrayKey].price,
               new Bid(array[arrayKey].id, 0), bidderName,
-              array[arrayKey].description)
+              array[arrayKey].description, array[arrayKey].startDate,
+              array[arrayKey].endDate, array[arrayKey].categories,
+              array[arrayKey].lotImages)
             this.listOfLots.push(newLot)
           }
           this.subscribeToLots(this.serverConnected)

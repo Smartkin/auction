@@ -1,6 +1,9 @@
 package com.badcompany.auction.entities;
 
 import com.fasterxml.jackson.annotation.*;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,6 +14,7 @@ import java.util.Set;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity
+//@Document(indexName = "auction", type = "lots")
 public class Lot {
     @Id
     @GeneratedValue
