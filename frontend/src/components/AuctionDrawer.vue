@@ -21,7 +21,64 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider/>
-      <v-list>
+      <v-list
+        expand
+      >
+        <v-list-group
+          color="white"
+          no-action
+          prepend-icon="mdi-account"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>
+              {{ userData ? userData.username : 'Гость' }}
+            </v-list-item-title>
+          </template>
+          <v-list-item
+            to="/profile"
+            v-if="userData"
+            class="mt-1"
+          >
+            <v-list-item-title>Личный кабинет</v-list-item-title>
+            <v-list-item-icon>
+              <v-icon>mdi-account</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+          <v-list-item
+            v-for="(action, i) in actions"
+            :key="i"
+            :to="action.link"
+            v-if="!userData"
+          >
+            <v-list-item-title v-text="action.name"/>
+            <v-list-item-icon>
+              <v-icon v-text="action.icon"/>
+            </v-list-item-icon>
+          </v-list-item>
+          <v-list-group
+            sub-group
+            no-action
+            color="white"
+            value="true"
+            v-if="userData"
+          >
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Управление</v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item
+              v-for="(action, i) in actions"
+              :key="i"
+              :to="action.link"
+            >
+              <v-list-item-title v-text="action.name"/>
+              <v-list-item-icon>
+                <v-icon v-text="action.icon"/>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+        </v-list-group>
         <v-list-item to="/">
           <v-list-item-icon>
             <v-icon>mdi-home</v-icon>
@@ -84,6 +141,8 @@ export default {
   data () {
     return {
       currentDrawer: false,
+      color: 'primary',
+      actions: [],
       categories: []
     }
   },
@@ -96,9 +155,16 @@ export default {
         this.currentDrawer = newDrawer
         this.$emit('drawer-change', newDrawer)
       }
+    },
+    userData: {
+      get () {
+        this.setActions()
+        return this.$store.state.auth.status.dataAcquired ? this.$store.state.auth.user.data : null
+      }
     }
   },
   mounted () {
+    this.setActions()
     CategoryService.getCategories().then(categories => {
       this.categories = categories
       this.categories.push({ name: 'Все' })
@@ -117,6 +183,40 @@ export default {
       if (!this.$router.currentRoute.path.includes(categoryObject.name)) {
         console.log('Switched category')
         this.$emit('category-change', categoryObject.name)
+      }
+    },
+    setActions () {
+      console.log('Changing user actions...')
+      this.actions = []
+      if (this.$store.state.auth.user && this.$store.state.auth.user.data) {
+        let user = this.$store.state.auth.user.data
+        console.log(user)
+        this.actions.push({
+          name: 'Создать лот',
+          icon: 'mdi-briefcase-plus',
+          link: '/create_lot'
+        })
+        this.actions.push({
+          name: 'Редактировать данные',
+          icon: 'mdi-account-edit',
+          link: '/edit_profile'
+        })
+        this.actions.push({
+          name: 'Выйти',
+          icon: 'mdi-account-arrow-right',
+          link: '/logout'
+        })
+      } else {
+        this.actions.push({
+          name: 'Войти',
+          icon: 'mdi-account-arrow-left',
+          link: '/login'
+        })
+        this.actions.push({
+          name: 'Регистрация',
+          icon: 'mdi-account-plus',
+          link: '/register'
+        })
       }
     }
   }
